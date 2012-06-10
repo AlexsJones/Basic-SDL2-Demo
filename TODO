@@ -1,0 +1,61 @@
+Note:You should enable word-wrap
+
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~.
+ |  What Needs to be done:  |
+ *~~~~~~~~~~~~~~~~~~~~~~~~~~*
+
+*PROBLEM----->If framerate is low, and player doesn't check his own collisions, he will glitch through objects.
+
+Engine function to check if movable object is inside map (take camera's code). collides(rect1, rect2, KEEP_INSIDE)
+
+Tiles, chunks, and map show function. The map is grass unless there is a value found in the map file.
+
+Basic collision detection
+
+Should the classes be put into namespaces? For easier setup of modding API.
+
+Should a bunch of the 'data' be put into a STL Vector<>, or Map<>, so things can change dynamically when the mods set the game up. The images and players are already done like this. The game should be able to connect to a server even if no images are found, then the server would provide the images the client needs.
+
+Handle if no images are found. Currently the game is completely black then throws a bad::alloc after a little while.
+
+Need menu class. /data/menu/images... When menu is opened, FPS should drop to around ~25-30 fps
+
+Check into possiblity of multiple images for one player, and ability to colorize an image. This would allow players to be more unique.
+
+Simple Particle system for weapons? Images as particles. Ex. Ninja star, bullets, etc...
+
+Have certain variables like controls, screen size, and fullscreen stored
+	in a configuration file, and loaded at startup (if file doesn't
+	exist load default values)(have 2 presets for movement(arrowkeys/wasd)
+
+Settings should be loaded from a file on startup. When user quits the game, all current settings should be saved.
+	Mod settings should only be saved on server.
+
+look into the 'bitset' stl container to add/hold certain things(ex. player actions), also look into 'enum class'
+
+Create a Config namespace/class/component to hold settings and key bindings.
+
+Maybe add mouse support for player movement. This would need some basic algorithms to move around objects which server would perform, but the server would have to validate less.
+
+Ability for multiple cameras. Maybe camera should be a "render target" texture that everything is drawn to, then displayed on to the screen. SDL_SetRenderTarget( camera[0].canvas )
+
+Error and exception handling.
+
+Use original grass as base for dirt or cobble stone texture.
+
+Pending--->Redo grass texture so it is thicker w/ blades of grass, less minecrafty.
+
+Come up with system for texturing. Have base textures, then 'decal' textures that could be applied across different textures. Ex. Stone could have a couple crack overlays which could also be applied to dirt. Should decals be saved in the map file, or randomly applied when chunk is generated. I like the latter, because it would make the map files simpler.
+
+
+ .~~~~~~~~~~~~~~.
+ |  Changelog:  |
+ *~~~~~~~~~~~~~~*
+
+Map rendering/tiling should be *highly* optimized.
+Render objects with lower 'box.y' values first
+Is it right how tileTexture(?,?,bounds) works, should it be offsetted by bounds/2?
+Player's movement based on time not fps, animationspeed based on player vel.
+Add macros for checking/enabling/disabling flags.
+
+

@@ -1,0 +1,25 @@
+/**     ______________________________________
+	   /  _______    _______    ________     /\
+      /	 / ___  /\  / ___  /\  / ______/\   / /\
+     / 	/ /__/ / / / /  / / / / /\_____\/  / / /
+    /  / _____/ / / /  / / / / / /        / / /
+   /  / /\____\/ / /__/ / / / /_/___     / / /
+  /  /_/ /      /______/ / /_______/\   / / /
+ /   \_\/       \______\/  \_______\/  / / /
+/_____________________________________/ / /
+\_____________________________________\/ /
+ \_____________________________________\/
+
+[Insert License Here]
+**/
+
+NOTE:You MUST have SDL2 to compile this game. If you don't have it first get
+	mercurial, then follow the README in the "lib" directory.
+
+How to build the Game:
+Go into the src/ directory, and either execute "./build.sh" or type:
+make
+
+The go back into the main directory and run the game.
+cd ../
+./poc

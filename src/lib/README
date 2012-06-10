@@ -1,0 +1,15 @@
+This lib folder is only used for building a static executable, which means it doesn't need any '.so' or '.dll' files when the executable is run. In order to build a static executable, you need to install SDL2. If SDL2 isn't installed system-wide, you need to place any '.a'(linux) or '.lib'(windows) files into this directory.
+
+You must have these libraries installed first:
+on Ubuntu run this in the terminal:
+	sudo apt-get install libsdl1.2debian libsdl-image1.2-dev libsdl-image1.2 libsdl1.2-dev libsmpeg-dev  libmikmod2-dev libvorbisfile3 libvorbis-dev libogg-dev libxxf86dga-dev libxxf86vm-dev libxv-dev libxinerama-dev libxi-dev libglew1.6-dev 
+
+For the static-link script to work, 'make' needs to be run first, to generate the object files.
+go into the 'src' directory and type
+make
+
+then execute the "static-link.sh" script.
+./static-link.sh
+
+
+Now in the 'PlaneOfCraftiness' folder there should be a file called poc(static)_<current date>.

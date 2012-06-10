@@ -1,0 +1,42 @@
+/**     ______________________________________
+	   /  _______    _______    ________     /\
+      /	 / ___  /\  / ___  /\  / ______/\   / /\
+     / 	/ /__/ / / / /  / / / / /\_____\/  / / /
+    /  / _____/ / / /  / / / / / /        / / /
+   /  / /\____\/ / /__/ / / / /_/___     / / /
+  /  /_/ /      /______/ / /_______/\   / / /
+ /   \_\/       \______\/  \_______\/  / / /
+/_____________________________________/ / /
+\_____________________________________\/ /
+ \_____________________________________\/
+
+**/
+This folder will contain the files that describe, define, setup the game and
+its content.
+
+It would be nice to have some of these files written in the Lua scripting language.
+This would allow quicker development, because the scrpits could be loaded on demand
+without re-compiling everything.
+
+
+Example of what these files will contain (Psuedo-code):
+//pirate.cpp
+#include "engine/player.cpp" 
+#include "engine/animation.cpp"
+#include "engine/physics.cpp"
+
+class Pirate : public Player
+{
+	Pirate()
+	{
+		maxVelocity = 100;
+		AnimationComponent.add( sword_attack, pirate.png, 40, 60 );
+		ActionComponent.add( sword_attack, "attack" );
+	}
+	void update()
+	{
+		//do something awesome
+		//then call player's update function
+		Player::update();
+	}
+};
