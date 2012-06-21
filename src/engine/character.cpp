@@ -22,12 +22,12 @@
 **/
 
 Character::Character()
-	 :AnimatedObject(CHARACTER),// ACTION(0),
+	 :AnimatedObject(CHARACTER), physics(box), ACTION(0),
 		Actions
 		{	 //This is just a test
 			{"LEFT",1}, {"RIGHT",0},
 			{"UP",0}, {"DOWN",0},
-			{"ATTACK",0},
+			{"ATTACK",0}
 		}
 //		velocity(140.f), timeref(SDL_GetTicks())
 {
@@ -42,8 +42,8 @@ Character::Character()
 	pos.y = -(box.h / 2.0);*/
 //	box.x = pos.x;
 //	box.y = pos.y;
-	box.x = 100;
-	box.y = 100;
+	box.x = 0;
+	box.y = 0;
 	oldbox = box;
 }
 void Character::TestActions()
@@ -55,6 +55,15 @@ void Character::TestActions()
 			printf("'[%s]' is enabled in custom actions\n",x.first.c_str());
 		}
 	}
+}
+
+Character::Character( InputComponent* input ) //Character(const InputComponent& input)
+	:AnimatedObject(CHARACTER), physics(box)
+{
+	Character();
+	this->input = input;
+//	Animation animation = { "Left", {{0,0,47,51}}, 1 };
+//						  {"id", SDL_Rect coord/size, frames?}
 }
 
 
@@ -73,6 +82,8 @@ void Character::animate()
 */}
 
 ///#### Keyboard Input ####
+//	Character.update( [event/message] )	---> component-manager hands it to correct component
+//										`*--> if it is null, just update everything.
 void Character::move(SDL_KeyboardEvent& keyevent)
 {
 //	std::map< std::string, std::list<SDL_Keycode> > GameEventPrimitives;
@@ -113,17 +124,14 @@ void Character::update()
 	physics.update( ACTION, box );
 	position.update();	//Position should be part of physics, box(position) should be part of movement
 
-//	Component version of Animate
-//	if( oldbox.x != box.x || oldbox.y != box.y ){
-//		animations.update( ACTION );
-//	} else
-//	{ animations.setToDefault(); }
-
 	if( oldbox.x != box.x || oldbox.y != box.y ){
-		animation.animate( ACTION );
+		animation.update( ACTION );
+//		printf("ACTION = %d\n",ACTION);
 	} else
+/*	Possibly have animation speed based on an average amount of pixels moved.
+ * 	And have setToDefault() called when he stands still for 2 sec for example
+ */
 	{ animation.setToDefault(); }
-
 }
 
 
@@ -209,22 +217,14 @@ void Character::update()
 //void Character::moveTo( Coordinate ){}
 float Character::getMaxVelocity(){ return physics.Velocity(); }
 //void Character::setType( const CharacterType& type ){ }
-const SDL_Rect& Character::getImage(){ return animation(); }
+
+//	This allows engine to draw image on canvas.
+//const SDL_Rect& Character::getImage(){ return animation(); }
+
+//const SDL_Rect& Character::getBox(){ return animations.getBox(); }
 
 
-////////////////////////////
-///	Definition of POG	///
-//////////////////////////
-class Pog : public Character
-{
-public:
-	Pog(InputComponent* input) //Pog(const InputComponent& input)
-		
-	{
-		Character::input = input;
-//		Animation animation = { "Left", {{0,0,47,51}}, 1 };
-//							  {"id", SDL_Rect coord/size, frames?}
-	}
-	void switchInput(InputComponent* input){ ; }
-
-};
+void Character::switchInput(InputComponent* input)
+{	
+	this->input = input;
+}

@@ -1,5 +1,5 @@
 /**     ______________________________________
-	   /  _______    _______    ________     /\
+       /  _______    _______    ________     /\
       /	 / ___  /\  / ___  /\  / ______/\   / /\
      / 	/ /__/ / / / /  / / / / /\_____\/  / / /
     /  / _____/ / / /  / / / / / /        / / /
@@ -34,53 +34,72 @@
  * 	in order to animate the sprite.
  * 
 **/
-class Animation
+class Sprite
 {
 	private:
-		SDL_Rect image;					//size of image
-		
+//		std::string id;
+		SDL_Rect image;
+		std::vector<SDL_Rect> sprites;  //sequence of frames, contains number of frames: sprites.size()
+//		int frames;
+	public:
+};
+class Animation
+{
+	friend class AnimationComponent;
+	protected:
+		std::string id;
+	
 		bool locked;
-		std::vector<SDL_Rect> sprites;  //sequence of frames
-		Uint frames;					//columns
-		Uint animations;				//rows
-		Uint speed;
+		std::vector<SDL_Rect> frames;  //sequence of frames
+		int speed;
 		
-		Uint currentFrame;
-		Uint currentAnimation;
-		Uint defaultFrame;
+		int currentFrame;
+		int defaultFrame;
 		
 		bool reverseAnimate;
 		Uint timeref;
 		
 	public:
+		void ID(std::string id);
 		Animation();
 		Animation(std::string imagefile, int w, int h);
-		void create(std::string imagefile, int w, int h);
+//		void create( std::string id, std::string imagefile, SDL_Rect* image, SDL_Rect frame, int frames, int defaultFrame );
+		void add(SDL_Rect frame);
 		
 		void animate();
-		void animate(int ACTIONS);
-		
-		void set(Uint nAnimation);
-		void setSpeed(Uint speed);
-		void setDefault(Uint nFrame);
+
+		void setSpeed(int speed);
+		void setDefault(int nFrame);
 		void setToDefault();
 		
-		const SDL_Rect& get(Uint nAnimation, Uint nFrame);
-		const SDL_Rect& operator()(Uint nAnimation, Uint nFrame);
-		const SDL_Rect& operator()(Uint nIndex);
+		const SDL_Rect& get(int nFrame);
+		const SDL_Rect& operator()(int nFrame);
 		const SDL_Rect& operator()();
 };
 
 class AnimationComponent : public Component
 {
 	private:
-		std::vector<Animation> animations; //Should this be a map<Animation, std::string>
+		std::vector<Animation> animations;	//Should this be a map<Animation, std::string>
+		int currentAnimation;
+		SDL_Rect box;
+		
 	public:
+		AnimationComponent();
 		void update(){};
-		void update(int){};
-		void set(int animation); //Engine action-primitve
+		void update(Uint8& ACTION);
+		void animate(int);
+		
+		void add( std::string id, std::string imagefile, SDL_Rect* image, SDL_Rect frame, int frames, int defaultFrame=0 );
+		
+		void set(Uint animation); 			//	and Engine action-primitve?
 		void set(std::string animation);
 		void setToDefault();
-		Animation get();
+		
+		void setDefaultFrame( Uint nAnimation, Uint nFrame );
+				
+		const SDL_Rect& get(Uint nAnimation);
+		const SDL_Rect& operator()();
+
 };
 #endif

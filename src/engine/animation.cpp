@@ -1,77 +1,56 @@
 
 #include "engine.h"
 
-/**	TODO: Add an operator[] or function to setup which player actions belong
- *	to which animation.sprite[box]. This would give us the ability to:
- * 	1. Allow certain animations to have long/shorter frames.
- * 	2. Allow the spritesheet to be completely customized for custom
- * 		actions(as long as the player can be configured that way).
- * 
- *	NOTE: Internally animation/frame 1 is actually 0.
- * 		ex. Animation.set(1) ---> actually sets animation to 0.
- *		Because of this change there may be some bugs hiding in here. 
- *	
+/**	Each Animation should have frame zero return a box{0,0,0,0} so characters
+ * 	or players that are not setup, don't cause the program to crash when
+ * 	they are instantiated. This will make animation/frame 1 to be 1 and frame 
+ * 	zero to be zeroes(blank).
 **/
-/////////////////////////////////////////////////////
-/// Animation ///
-/////////////////////////////////////////////////////
-Animation::Animation()
-	:locked(false), frames(0), animations(0), currentFrame(0),
-		currentAnimation(0), timeref(0)
+///////////////////////////
+/// 	Animation 		///
+///////////////////////////
+void Animation::ID(std::string id)
 {
-	image.x = image.y = 0;
-	image.w = image.h = 0;
+	this->id = id;
+}
+Animation::Animation()
+	: id(),locked(false), currentFrame(1), timeref(0)
+{
+//	frames.reserve(2);
+	add( {0,0,0,0} );
 	speed = 50;
-	defaultFrame = 2;						//should be 2 for pirate
+	defaultFrame = 1;
 	reverseAnimate = false;
 }
 
-Animation::Animation(std::string imagefile, int w, int h){
-	Animation();
-	create(imagefile, w, h);
-}
-
-void Animation::create(std::string imagefile, int w, int h)
+Animation::Animation(std::string imagefile, int w, int h)
 {
-	if (locked){return;}
-	image = Engine::getImageSheetDimensions(imagefile);
-
-	if (image.w % w || image.h % h){	//if there are remainding pixels
-		printf("Warning:: Invalid Size: %s [%d x %d] \n", imagefile.c_str(), w, h);
-		printf("	  Does not fit cleanly inside sprite-sheet.\n\n");
-	}
-	
-	frames = image.w  / w;
-	animations = image.h / h;
-	if ( !frames ){ frames = 1; }
-	if ( !animations ){ animations = 1; }
-//	printf("%d,%d",frames,animations);
-	for (Uint rowIndex = 0; rowIndex < animations; rowIndex++){
-		for (Uint columnIndex = 0; columnIndex < frames; columnIndex++){
-			sprites.push_back( Engine::setClip( NULL, columnIndex*w, rowIndex*h, w, h ) );
-		}
-	}
-	locked = true;
+	Animation();
+//	create(imagefile, w, h);
 }
 
 void Animation::animate()
 {
 	if( Timer::updateInterval(speed, timeref) )
 	{
-		if (!reverseAnimate && currentFrame < frames)
+		if ( !reverseAnimate )
 		{
 			currentFrame++;
-			if (currentFrame >= frames){
-				if (frames == 1 || frames == 2) currentFrame = 0;
+			if ( currentFrame >= frames.size()-1 ){
+				if ( frames.size() == 2 || frames.size() == 3 ) currentFrame = 1;
 				else { reverseAnimate = true; currentFrame--; }
 			}
 		}
-		if( reverseAnimate ) { currentFrame--; }
-		if( reverseAnimate && currentFrame<=0 ) { reverseAnimate = false; }
+		else if( reverseAnimate )
+		{
+			currentFrame--;
+			if( currentFrame<=1 )
+				reverseAnimate = false;
+		}
 	}
 }
 
-void Animation::animate(int ACTION)
+/*void Animation::animate(int ACTION)
 {
 	if (hasFlag(ACTION, LEFT))	{ set( 1 ); }
 	if (hasFlag(ACTION, RIGHT))	{ set( 2 ); }
@@ -84,59 +63,213 @@ void Animation::animate(int ACTION)
 	if (hasFlag(ACTION, (DOWN + RIGHT))){ set( 8 ); }
 	animate();
 };
-
-void Animation::setSpeed(Uint speed){
+*/
+void Animation::setSpeed(int speed){
 	this->speed = speed;
 }
 
-void Animation::set(Uint nAnimation){
-	if (nAnimation > animations)	//if animation is higher than whats available
-		return;						//don't change animation
+/*void Animation::set(Uint nAnimation){
+//	if (nAnimation > animations)	//if animation is higher than whats available
+//		return;						//don't change animation
 	if (nAnimation <= 0)			//AnimationZero doesn't exist anymore
 		return;
-	else currentAnimation = --nAnimation;
+//	else currentAnimation = --nAnimation;
 }
-
-void Animation::setDefault(Uint nFrame){
-	if (nFrame > frames || frames <= 1)
+*/
+void Animation::setDefault(int nFrame){
+	if ( (nFrame >= frames.size()) || (nFrame == 0) ){
 		return;
-	else defaultFrame = --nFrame;
+	} else{
+		defaultFrame = nFrame;
+	}
 }
 
 void Animation::setToDefault(){
 	currentFrame = defaultFrame;
-	if (currentFrame >= frames)
-		currentFrame = 0;
+	if (currentFrame >= frames.size())
+		currentFrame = 1;
 	reverseAnimate = false;
 }
 
-
-/** The following are used to get state of the animation.
- * 	The Player class calls this every time the engine requests the 'image'
- * 	from the player through the getImage().
- * 	Example:
- * 	class Frog{
- *		private: Animation animstate;
- * 		pucblic:const SDL_Rect& update(){animstate();}
- * 	}
- * 	"Frog.update();" will return a clip from the spritesheet to render.
-**/ 
-const SDL_Rect& Animation::get(Uint nAnimation, Uint nFrame)
+const SDL_Rect& Animation::get( int nFrame )
 {
-	if( nAnimation < animations && nFrame < frames )
+	if (nFrame <= 0){
+		printf("Warning, requesting blank frame...\n");
+		return frames[0];
+	}
+	if( nFrame < frames.size() )
 	{
-		currentAnimation = nAnimation;
 		currentFrame = nFrame;
-		return sprites[( nAnimation * (frames) + nFrame )];
+		return frames[ currentFrame ];
 	}
 	
-	if ( nAnimation > animations && nFrame < frames )
-		return sprites[( (animations - 1) * (frames) + nFrame )];
-	if ( nAnimation < animations && nFrame > frames )
-		return sprites[( nAnimation * (frames) + nFrame-1)];
-	return sprites[0];
+	if ( nFrame >= frames.size() ) 				//	If frame index is too high
+		printf("Warning, requesting a frame index higher than total frames...\n");
+		return frames[ frames.size()-1  ];	//	Return the last frame
 }
 
 const SDL_Rect& Animation::operator()(){
-	return get(currentAnimation, currentFrame );
+	return get( currentFrame );
 }
+
+
+void Animation::add(SDL_Rect frame)
+{
+	frames.push_back( frame );
+}
+
+
+///////////////////////////
+///	Animation Component	///
+///////////////////////////
+
+AnimationComponent::AnimationComponent()
+{	
+	box = {0,0,0,0};
+	currentAnimation = 1;
+	animations.reserve( 8 );
+	Animation blankAnimation;
+	blankAnimation.add( box );
+	blankAnimation.ID("");
+	animations.push_back( blankAnimation );
+//	printf("AnimationComponent now has %d Animation\n", animations.size());
+}
+
+//Should ACTION by type-safe?????
+void AnimationComponent::update(Uint8& ACTION)
+{
+	if ( !animations.empty() ){
+		if (hasFlag(ACTION, LEFT))			{ set( "left" ); 	set( 1 );}
+		if (hasFlag(ACTION, RIGHT))			{ set( "right" ); 	set( 2 ); }
+		if (hasFlag(ACTION, UP))			{ set( "up" ); 		set( 3 ); }
+		if (hasFlag(ACTION, DOWN))			{ set( "down" ); 	set( 4 ); }
+	//	Diagonals
+		if (hasFlag(ACTION, (UP + LEFT)))	{ set( "left" ); 	set( 5 );}
+		if (hasFlag(ACTION, (UP + RIGHT)))	{ set( "right" ); 	set( 6 ); }
+		if (hasFlag(ACTION, (DOWN + LEFT))) { set( "left" ); 	set( 7 );}
+		if (hasFlag(ACTION, (DOWN + RIGHT))){ set( "right" ); 	set( 8 );}
+		animations[currentAnimation].animate();
+	}
+}
+
+
+//	The function parameters needs to be shorter.
+void AnimationComponent::add( std::string id, std::string imagefile, SDL_Rect* image, SDL_Rect frame, int frames, int defaultFrame )
+{
+//	printf("Adding Animation\n");
+//	Get box for the image.If not supplied already.
+	if ( !image ){
+	SDL_Rect* imageBox = new SDL_Rect;
+	*imageBox = Engine::getImageSheetDimensions(imagefile);
+	imageBox->x = imageBox->y = 0;
+	image = imageBox;
+	//printf("Image::%d.%d %d x %d\n",image->x, image->y, image->w, image->h );
+	}
+
+//	Caluculate the amount of frames that can fit in the space of the image.
+	int framesWide = ( image->w - frame.x ) / frame.w;
+	int framesHigh = ( image->h - frame.y ) / frame.h;
+
+	if ( (framesWide * framesHigh) < frames )
+		printf("Not enough space inside %s image to create %s animation\n",imagefile.c_str(), id.c_str());
+
+//	Get the absolute coordinates of the start frame.
+//	This allows the frame to be relative of the image box.
+	int startX = frame.x;
+	
+	frame.x += image->x;
+	frame.y += image->y;
+	
+//	Animation* newAnimation = new Animation;
+	Animation newAnimation;
+	newAnimation.ID(id);
+	newAnimation.setDefault(defaultFrame);
+	
+	//Just use a Point index.x/y ?
+	int rowIndex = 0;
+	int columnIndex = 0;
+//	Assign the frames to the sprite from the image.
+	for (int currentFrame = 0; currentFrame </*=/*if first frame is 1 NOT 0*/ frames; currentFrame++)
+	{
+//		If the current frame doesn't fit on the image (x-axis).
+		if ( (frame.x + (currentFrame * frame.w)) > (image->x + image->w) ){
+//			Go to the next line and reset the X cooridinate.
+			frame.y += frame.h;	rowIndex++;
+			frame.x = startX;	columnIndex = 0;
+//			Unless there isn't room for the next line....dun..dun..dunnnnn
+			if ( (frame.y + frame.h) > (image->y + image->h) ){
+				printf("Warning %s sprite does not fit inside image correctly.\n", id.c_str());
+			}
+		}
+		/*	Add the frames to the Animation's Sprite	*/
+		newAnimation.add( Engine::setClip( NULL,
+							frame.x + columnIndex*frame.w, frame.y + rowIndex*frame.h, 
+							frame.w, frame.h )	);
+		columnIndex++;
+	}
+	animations.push_back( newAnimation );
+//	printf("Animation now has %d frames\n", animations[ animations.size() -1].sprites.size());
+//	printf("AnimationComponent now has %d Animation\n", animations.size());
+/*	for (rowIndex = 0; rowIndex <= framesHigh; rowIndex++){
+		for (columnIndex = 0; columnIndex <= frames; columnIndex++){
+			newAnimation.add( Engine::setClip( NULL, frame.x + columnIndex*frame.w, rowIndex*frame.h + frame.y, frame.w, frame.h )	);
+//			sprites.push_back( Engine::setClip( NULL, columnIndex*w, rowIndex*h, w, h ) );
+//			newAnimation.addSpriteFrame()
+		}
+	}	*/
+//	printf("image: %d.%d %d x %d\n",image->x,image->y,image->w,image->h);
+}
+
+void AnimationComponent::set( Uint nAnimation ){
+	if ( 0 < nAnimation && nAnimation < animations.size() ){
+		currentAnimation = nAnimation;
+	}
+//	else printf("Could not set animation: %d\n",nAnimation);
+}
+
+void AnimationComponent::set( std::string animationID )
+{
+		//for ()		//iterate through animations
+						//check if animationID matches any animations[i].id()
+}
+
+void AnimationComponent::setToDefault(){
+	if ( !animations.empty() ){
+		animations[currentAnimation].setToDefault();
+	}
+}
+
+void AnimationComponent::setDefaultFrame( Uint nAnimation, Uint nFrame ){
+	if ( nAnimation < animations.size() )
+		animations[nAnimation].setDefault(nFrame);
+}
+
+const SDL_Rect& AnimationComponent::get(Uint nAnimation)
+{
+//	printf("Total Animations: %d \nRequesting Animation: %d\n",animations.size(),nAnimation);
+	if ( animations.empty() ){
+//		printf("Empty Animation, Tried to Get Animation %d \n\n",nAnimation);
+		return box;
+	}
+//	if (nAnimation == 0){
+//		printf("Getting Animation %d \n\n",nAnimation);
+//		return animations[ 0 ]();
+//	}
+	if (nAnimation < animations.size()){
+//		printf("Getting Animation: %d which has %d frames\n\n",nAnimation, animations[ animations.size() -1].frames.size());
+		return animations[ nAnimation ]();
+//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+///	The Code CRASHES Here	///X
+//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+	}
+}
+
+const SDL_Rect& AnimationComponent::operator()(){
+	const SDL_Rect &temp = get(currentAnimation);
+//	printf("Current Animation: %d, Frame: %d,%d %d x %d\n",currentAnimation,&temp.x,&temp.y,&temp.w,&temp.h);
+	return get(currentAnimation);
+}
+
+//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+///	currentAnimation needs to be set-up correctly	///X
+//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX

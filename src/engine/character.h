@@ -1,5 +1,5 @@
 /**     ______________________________________
-	   /  _______    _______    ________     /\
+       /  _______    _______    ________     /\
       /	 / ___  /\  / ___  /\  / ______/\   / /\
      / 	/ /__/ / / / /  / / / / /\_____\/  / / /
     /  / _____/ / / /  / / / / / /        / / /
@@ -38,7 +38,7 @@ class Character : public AnimatedObject
 {
 /**	Break it UP!!! Into Components =]
  * Should be CharacterTemplate?? -> Overload the
- * 	constructor(or create()) function to setup the components.
+ * constructor(or create()) function to setup the components.
 **/
 	protected:
 		//std::vector<Component> components; //Why would object have a list of its own components? - ComponentManager?
@@ -51,15 +51,9 @@ class Character : public AnimatedObject
 		
 	//PhysicsComponent
 		PhysicsComponent physics;
-/*		fPoint pos;
-		float velocity;
-		fPoint vel;
-		SDL_Point acc;
-		float accstep;
-		float deaccstep; */
-				
+			
 		PositionComponent position;
-		AnimationComponent animations;
+//		AnimationComponent animations;	//	NOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 		InputComponent* input; //Engine Assigns Player1 controls?
 		
 	//UpdateComponent??	//Could be used for managing which Components update when.	
@@ -72,6 +66,7 @@ class Character : public AnimatedObject
 		float health;
 	public:
 		Character();
+		Character(InputComponent* input);
 		void TestActions();
 		void move(SDL_KeyboardEvent& keyevent); //replace key with an ACTION
 		void moveTo();
@@ -81,7 +76,10 @@ class Character : public AnimatedObject
 		
 		float getMaxVelocity();
 		//virtual void setType( const CharacterType& type );
-		
-		const SDL_Rect &getImage();
+		void switchInput(InputComponent* input);
+//		const SDL_Rect &getImage();
+//		const SDL_Rect& getBox();
+
 };
+
 #endif

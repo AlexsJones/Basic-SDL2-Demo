@@ -53,9 +53,10 @@ int main(int argc, char *args[])
 	//Game::Init(); //This would be used to inject content that the engine and menu can use.
 	engine.setMenuBackground( "grass" );		//put into a menu loop ---> and menu class
 //	engine.menu_loop();
+//	engine.addPlayer("pog");
 	engine.addPlayer("pirate");
-	engine.addPlayer("monster");
-	engine.addPlayer("monster");
+//	engine.addPlayer("monster");
+//	engine.addPlayer("monster");
 	
 	std::cout << timestamp() << "\n";
 	

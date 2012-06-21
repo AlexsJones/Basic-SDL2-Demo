@@ -4,9 +4,9 @@
 
 void MovementComponent::update()
 {
-};
+}
 
-PhysicsComponent::PhysicsComponent()
+PhysicsComponent::PhysicsComponent(SDL_Rect box)
 	:velocity(140.f), timeref(SDL_GetTicks())
 {
 	vel.x = vel.y = 0.f;
@@ -17,16 +17,17 @@ PhysicsComponent::PhysicsComponent()
 	deaccstep = accstep * 4.f;
 //	animation.setSpeed(2000/(velocity/5));
 	
-	pos.x = 0;
-	pos.y = 0;
+	pos.x = box.x;
+	pos.y = box.x;
 	//NEEDS a way to set spawn(passed in when PhysicsComponent is created)
 //	pos.x = -(box.w / 2.0);
 //	pos.y = -(box.h / 2.0);
-};
-void PhysicsComponent::update()
-{};
+}
 
-void PhysicsComponent::update(unsigned char& ACTION, SDL_Rect& box)
+void PhysicsComponent::update()
+{}
+
+void PhysicsComponent::update(Uint8& ACTION, SDL_Rect& box)
 {
 //	update the acceleration and keep with bounds
 //	update the velocity using the new acc. and deltaTime
@@ -72,7 +73,7 @@ while (Timer::updateInterval(timestep, timeref)){
 	box.y = pos.y;
 }
 if (!ACTION){ timeref = SDL_GetTicks(); }
-};
+}
 
 float PhysicsComponent::Velocity(){ return velocity; }
 
@@ -82,7 +83,7 @@ float PhysicsComponent::Velocity(){ return velocity; }
 
 void PositionComponent::update()
 {
-};
+}
 
 
 InputComponent::InputComponent()
@@ -96,7 +97,7 @@ InputComponent::InputComponent()
 
 void InputComponent::update()
 {	
-};
+}
 	
 void InputComponent::checkFor(SDL_Keycode keycode)
 {

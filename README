@@ -1,5 +1,5 @@
 /**     ______________________________________
-	   /  _______    _______    ________     /\
+       /  _______    _______    ________     /\
       /	 / ___  /\  / ___  /\  / ______/\   / /\
      / 	/ /__/ / / / /  / / / / /\_____\/  / / /
     /  / _____/ / / /  / / / / / /        / / /
@@ -12,6 +12,10 @@
 
 [Insert License Here]
 **/
+
+Currently, the make file doesn't allow you to install this system wide. Instead, by
+default, it runs in place.
+
 
 NOTE:You MUST have SDL2 to compile this game. If you don't have it first get
 	mercurial, then follow the README in the "lib" directory.

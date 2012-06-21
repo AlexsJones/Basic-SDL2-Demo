@@ -6,9 +6,18 @@
  * 	good chance he could glitch through things(especially if there is low
  * 	fps) The engine needs to be able to handle it. With the current system this
  * 	isn't really possible. There needs to be a good collision detection system.
- * 	Possibly AABBox system.
+
+ * 	This can be done if player has it's own CollisionComponent. The 
+ * 	interface for this component should be able to interact with other
+ * 	collision components, maybe through a CollisonComponentManager.
+ * 
+ * 	Have a previously stored, good position that changes everytime the
+ * 	player moves. If he moves into a wall it will restore his x position 
+ * 	to the previously known good position, for example. It would need to
+ * 	tell physics to hinder the player's x-axis velocity.
  * 
  * 	Need separate box for collisions. 
+ *  Possibly AABBox collision detection.
  * 
  * 
  *  A_LEFT
@@ -24,22 +33,31 @@ Player::Player()
 }
 
 Player::Player( std::string filename, int width, int height ) //this width + height  determines size of frames.
+	:Character()
 {
 	Player();
 	name = filename;
-	animation.create( name, width, height );
+//	animations.add( name, width, height );
+	SDL_Rect frame = {0,0,width,height};
+	animation.add( "left", filename, NULL, frame, 6, 2	);
+	frame.y += height;
+	animation.add( "right", filename, NULL, frame, 6, 2 );
+	//	Set default frames to 2 for pirate
+	animation.setDefaultFrame(1,2);
+	animation.setDefaultFrame(2,2);
 	box.w = width;
 	box.h = height;
 }
 
 void Player::setType( const PlayerType& type ){ this->type = type; }
 
-//Getters
-
 const PlayerType& Player::getType(){ return type; }
 
-//const SDL_Rect& Player::getBox(){ return box; }
-//const SDL_Rect& Player::getImageBox(){ return imagebox; }
+
+///////////////////////////
+///		Random Tests	///
+///////////////////////////
+
 
 class Foo
 {
@@ -53,7 +71,6 @@ class Foo
 			nBar = *x;
 		}	
 };
-
 Foo foo( {5,7,3,8,3,2,7} );
 
 class Player2

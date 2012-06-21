@@ -3,7 +3,7 @@
 
 #include <algorithm>
 
-/** Instantiation of some static variables **/
+/**	Instantiation of some static variables	**/
 	Window Engine::window;
 	SDL_Renderer* Engine::canvas;
 	std::map<std::string, SDL_Texture*> Engine::imageVault;
@@ -113,6 +113,7 @@ void Engine::game_loop()
 						window.resize();
 						camera.resize(window.getBox());
 					}
+					window.update(event.window);
 					break;
 				default: break;
 			}
@@ -133,7 +134,7 @@ void Engine::game_loop()
 		debug();
 
 		render();
-		timer.update();
+//		timer.update();
 		Ticks::capFPS( MAX_FPS );
 	}
 }
@@ -152,6 +153,19 @@ SDL_Rect Engine::setClip ( SDL_Texture* source, int xOffset, int yOffset, int cl
 	if (source){
 		if (clipWidth == 0){SDL_QueryTexture(source, NULL, NULL, &clipWidth, NULL);}
 		if (clipHeight == 0){SDL_QueryTexture(source, NULL, NULL, NULL, &clipHeight);}
+	}
+	clip.w = clipWidth;
+	clip.h = clipHeight;
+	return clip;
+}
+
+SDL_Rect Engine::setClip ( SDL_Texture* source )
+{
+	SDL_Rect clip = {0,0,0,0};
+	int clipWidth = 0;
+	int clipHeight = 0;
+	if (source){
+		{SDL_QueryTexture(source, NULL, NULL, &clipWidth, &clipHeight);}
 	}
 	clip.w = clipWidth;
 	clip.h = clipHeight;
@@ -226,7 +240,8 @@ inline void Engine::applyTexture( SDL_Texture* source, SDL_Rect& sourceclip, SDL
 	SDL_RenderCopy( Engine::getCanvas(), source, &sourceclip, &clip );
 }
 
-//This version tiles a texture that does not move with the camera.
+//	This version tiles a texture that does not move with the camera.
+//	This could be used by the GUI
 void Engine::tileTexture( SDL_Texture* source, SDL_Rect& clip)
 {
 	//Check if texture fits perfectly in window
@@ -243,21 +258,23 @@ void Engine::tileTexture( SDL_Texture* source, SDL_Rect& clip)
 	}
 }
 
-int Engine::addPlayer(std::string type )
+void Engine::addPlayer(std::string type )
 {
 	if (map.isActive()){
 		if (players.size() >= MAX_PLAYERS){
 			printf("Warning:: Failed to add new player\n");
 			printf("	  Maximum amount of Players allowed is %d.\n\n", MAX_PLAYERS);
-			return 1;
+			return;
 		}
 		//hard-coded player size, maybe will be used as default? 		//not here though
-		Player playerX( type, 40, 60 );
-		playerX.ID = players.size();
-		players.push_back( playerX );
-		camera.follow(&players[ACTIVE_PLAYER]);
+		if (type != "pog"){
+			Player playerX( type, 40, 60 );
+			addPlayer(playerX);
+		} else{
+			Pog playerX;
+			addPlayer(playerX);
+		}
 	}
-	return 0;
 }
 
 void Engine::addPlayer(Player &player)
@@ -277,17 +294,19 @@ inline bool collides( SDL_Rect rect1, SDL_Rect rect2 ){
 }
 
 
-/**	Should objects control how their drawn, and engine tells it where to draw.
+/**	Should objects control how their drawn, and engine just handles what objects to draw.
  * 	This would allow greater flexibility with special abilities, and engine
  * 	wouldn't need to know much.
 **/
-template <typename Object>
+template <typename Object>		//does this need to be a template if all clases are based on Object?(polymorphism)
 void show( Object &object, SDL_Rect offset)
 {
 	SDL_Rect objectBox = object.getBox();
+//	Make object shown using an offset from camera to get the coordinates of
+//	where they are on the screen.
 	objectBox.x -= offset.x;
 	objectBox.y -= offset.y;
-	object.animate(); //should this be removed? or changed to draw()?
+	object.animate();
 	switch (object.objectType)
 	{
 		case CHARACTER:
@@ -297,8 +316,11 @@ void show( Object &object, SDL_Rect offset)
 			//	SDL_SetTextureBlendMode(Engine::loadImage(object.name), SDL_BLENDMODE_ADD);		//increases brightness
 			//	SDL_SetTextureAlphaMod(Engine::loadImage(object.name), 128); 					//50% transparent
 			//}
+//			printf("Loading Image: %s\n",object.name.c_str());
+//			printf("First Box: %d,%d %d x %d\n",&object.getImage().x,&object.getImage().y,&object.getImage().w,&object.getImage().h);
+//			printf("Second Box: %d,%d %d x %d\n",objectBox.x,objectBox.y,objectBox.w,objectBox.h);
 			SDL_RenderCopy( Engine::getCanvas(), Engine::loadImage(object.name),
-							&object.getImage(), &objectBox );
+							&object.getImage(), &objectBox );	//	clip of image, clip on screen
 			break;
 		}
 /**		case ITEM:
@@ -337,8 +359,6 @@ void Engine::update()
 	}
 	renderPlayers.sort();
 }
-
-//player needs to collide with map other objects.
 
 void Engine::showPlayers()
 {
@@ -410,7 +430,7 @@ void Engine::closeSplash(){}
 
 inline void Engine::setMenuBackground( std::string filename ){
 	backgroundTile = loadNewImage(filename);
-	backgroundClip = setClip(backgroundTile, 0, 0, 0, 0);
+	backgroundClip = setClip(backgroundTile);
 }
 
 //void Engine::tileMenuBackground(){ tileTexture(backgroundTile, backgroundClip); }

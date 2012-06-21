@@ -1,5 +1,5 @@
 /**     ______________________________________
-	   /  _______    _______    ________     /\
+       /  _______    _______    ________     /\
       /	 / ___  /\  / ___  /\  / ______/\   / /\
      / 	/ /__/ / / / /  / / / / /\_____\/  / / /
     /  / _____/ / / /  / / / / / /        / / /
@@ -44,7 +44,7 @@ typedef unsigned int Uint;
 #define DATA_DIR "data/"
 #define IMG_DIR (DATA_DIR "images/")
 
-#include "map.h"
+#include "map.h"	//Engine shouldn't have a map?
 #include "object.h"
 #include "character.h"
 #include "player.h"
@@ -53,14 +53,11 @@ typedef unsigned int Uint;
 #define MAX_FPS 60
 #define MAX_PLAYERS 256
 
-
 /*	TODO:	IMPLEMENT COORDINATES
  * 			Come up with a good structure for all the functions/classes.
- * 			Things that are 'static' could be grouped together and put into a namespace.
+ * 			Remove all 'static' variables because Android doesn't like them.
  * 
- * 		Pog::Graphics::setClip() or
- * 		Pog::Engine::setClip()
- * 		Pog::Resources::Image::load()
+ * 		Wrap up functionality better 
  * 
  * 	Many engine functions will probably be place into a 
  * 			game class and GUI/menu class.
@@ -124,6 +121,7 @@ class Engine
 		static SDL_Texture* loadImage( std::string filename );
 		static SDL_Texture* loadNewImage( std::string filename );
 		static SDL_Rect setClip( SDL_Texture* source, int xOffset, int yOffset, int clipWidth, int clipHeight );
+		static SDL_Rect setClip( SDL_Texture* source );
 
 		void drawRect(SDL_Rect rect);
 
@@ -133,7 +131,7 @@ class Engine
 		static void keepInBounds(SDL_Rect& box, SDL_Rect& Bounds);
 		SDL_Texture* loadMap( std::string filename );	
 			
-		int addPlayer(std::string type);
+		void addPlayer(std::string type);
 		void addPlayer(Player &player);
 		void showPlayers();
 		void handleInput(SDL_KeyboardEvent& keyevent);

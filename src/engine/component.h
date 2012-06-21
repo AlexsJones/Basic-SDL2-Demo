@@ -1,5 +1,5 @@
 /**     ______________________________________
-	   /  _______    _______    ________     /\
+       /  _______    _______    ________     /\
       /	 / ___  /\  / ___  /\  / ______/\   / /\
      / 	/ /__/ / / / /  / / / / /\_____\/  / / /
     /  / _____/ / / /  / / / / / /        / / /
@@ -27,7 +27,7 @@ class Component
 		virtual void update() = 0;
 };
 
-enum Movement //Primitives (very primitive)
+enum Movement	//Primitives (very primitive)
 {
 	LEFT 	= 	1<<1,
 	RIGHT 	=	1<<2,
@@ -48,10 +48,11 @@ class MovementComponent : public Component
 		void update();
 };
 
-
 struct fPoint{
 	float x; float y;
 };
+
+//base PhysicsComponent on PoisitionComponent
 class PhysicsComponent : public Component
 {
 	private:
@@ -66,10 +67,10 @@ class PhysicsComponent : public Component
 		float timestep;
 		
 	public:
-		PhysicsComponent();
+		PhysicsComponent(SDL_Rect box);
 		float Velocity();
 		void update();
-		void update(unsigned char& ACTION, SDL_Rect& box);
+		void update(Uint8& ACTION, SDL_Rect& box);
 };
 class PositionComponent : public Component
 {
@@ -83,8 +84,14 @@ struct KeyBinding
 {
 	SDL_Keycode key;
 	std::string action;
-	//modifier?
+	//SDL_Modstate	//modifier?
+	//function?
 };
+
+//	need some way to relate keys/movement/actions/animations with each other.
+//	id
+//	toggle switch w/ functions to toggle it
+//	animation to play id/index
 
 class InputComponent : public Component
 {
@@ -99,7 +106,7 @@ class InputComponent : public Component
 	public:
 		InputComponent();
 		void update();
-		void update(int ACTION);
+		void update(int ACTION);		//	For Character input
 		void checkFor(SDL_Keycode key);
 };
 #endif

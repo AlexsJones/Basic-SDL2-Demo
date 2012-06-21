@@ -1,6 +1,6 @@
 ## Makefile to build Plane of Craftiness on *nix systems.
 ##date doesn't work yet..
-DATE= $(date +%Y%m%d)
+DATE=$(date +%Y%m%d)
 
 CC=g++
 BIN=../poc	##$(DATE)

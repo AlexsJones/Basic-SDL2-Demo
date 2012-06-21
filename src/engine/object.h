@@ -1,5 +1,5 @@
 /**     ______________________________________
-	   /  _______    _______    ________     /\
+       /  _______    _______    ________     /\
       /	 / ___  /\  / ___  /\  / ______/\   / /\
      / 	/ /__/ / / / /  / / / / /\_____\/  / / /
     /  / _____/ / / /  / / / / / /        / / /
@@ -16,6 +16,7 @@
 #define _ENGINE_OBJECT_H
 
 #include "animation.h"
+#include "component.h"
 
 /**	TODO: Need method for objects to effect each other.
  * 		Objects could have a clip type
@@ -58,14 +59,24 @@ class Object : public iObject
 		~Object(){}
 };
 
-class AnimatedObject: public Object
+class SimpleAnimatedObject: public Object
 {
 	protected:
 		Animation animation; //single animation.
 	public:
+		SimpleAnimatedObject(ObjectType type) : Object(type){}
+		virtual void animate(){ }
+		const SDL_Rect &getImage(){ return animation(); }
+};
+
+class AnimatedObject: public Object
+{
+	protected:
+		AnimationComponent animation; //multiple Animations
+	public:
 		AnimatedObject(ObjectType type) : Object(type){}
 		virtual void animate(){ }
-		const SDL_Rect &getImageState(){ return animation(); }
+		const SDL_Rect &getImage(){ return animation(); }
 };
 
 class Item : public Object

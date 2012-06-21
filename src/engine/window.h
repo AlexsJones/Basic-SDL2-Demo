@@ -1,5 +1,5 @@
 /**     ______________________________________
-	   /  _______    _______    ________     /\
+       /  _______    _______    ________     /\
       /	 / ___  /\  / ___  /\  / ______/\   / /\
      / 	/ /__/ / / / /  / / / / /\_____\/  / / /
     /  / _____/ / / /  / / / / / /        / / /
@@ -16,7 +16,9 @@
 #define _ENGINE_WINDOW_H
 
 #include "macro.h"
-/**	Note: IF input is not grabbed, everytime window is focused it needs
+/**	Needs input container that accepts window events.
+ * 
+ * Note: IF input is not grabbed, everytime window is focused it needs
  * 			to check if window is fullscreen. Ex. If user alt-tabs out of
  * 			fullscreen, the window looks restored, but behaves oddly.
  * 			So, if window is supposed to be fullscreen, on focus set it to
@@ -29,17 +31,18 @@
  * 
  * 	NOTE: Window's position is absolutely useless
 **/
-class Window{
+class Window
+{
 	private:
 		SDL_Rect box;
 		SDL_Window* window;
 		SDL_DisplayMode displayMode;
 		SDL_Renderer* canvas;
 		SDL_Surface* windowicon;
-		short MINIMUM_WINDOW_WIDTH;
-		short MINIMUM_WINDOW_HEIGHT;
+		int minWidth;
+		int minHeight;
 	public:
-		Window() : MINIMUM_WINDOW_WIDTH(480), MINIMUM_WINDOW_HEIGHT(320)
+		Window() : minWidth(480), minHeight(320)
 		{
 			box.x = box.y = 0;
 			box.w = WINDOW_WIDTH;
@@ -91,24 +94,55 @@ class Window{
 		void resize()
 		{
 			SDL_GetWindowSize( window, &box.w, &box.h );
-			if (box.w < MINIMUM_WINDOW_WIDTH){
-				box.w = MINIMUM_WINDOW_WIDTH;
+			if (box.w < minWidth){
+				box.w = minWidth;
 				SDL_SetWindowSize(window, box.w, box.h);
 			}
-			if (box.h < MINIMUM_WINDOW_HEIGHT){
-				box.h = MINIMUM_WINDOW_HEIGHT;
+			if (box.h < minHeight){
+				box.h = minHeight;
 				SDL_SetWindowSize(window, box.w, box.h);
 			}
 			SDL_RenderSetViewport( canvas, &box );
 		}
-		
-		void setMinWidth(Uint w){ MINIMUM_WINDOW_WIDTH = w; }
-		void setMinHeight(Uint h){ MINIMUM_WINDOW_HEIGHT = h; }
+		/*TODO: handling focus, engine mainly needs this?*/
+		void setMinWidth(Uint w){ minWidth = w; }
+		void setMinHeight(Uint h){ minHeight = h; }
 		void setMinSize(Uint w, Uint h){ setMinWidth( w ); setMinHeight( h ); }
 		
 		const SDL_Rect &getBox(){ return box; }
 		
 		bool isFullscreen(){ return hasFlag(SDL_GetWindowFlags(window), SDL_WINDOW_FULLSCREEN); }
+		
+		void update( SDL_WindowEvent event )
+		{
+			switch ( event.type )
+			{
+				case SDL_WINDOWEVENT_RESIZED:
+					break;
+				case SDL_WINDOWEVENT_MAXIMIZED:
+					break;
+				case SDL_WINDOWEVENT_RESTORED:
+					break;
+					
+				case SDL_WINDOWEVENT_SHOWN:
+					break;
+				case SDL_WINDOWEVENT_FOCUS_GAINED:
+					break;
+//				case SDL_WINDOWEVENT_ENTER:				//Mouse Entered Window
+					break;
+					
+				case SDL_WINDOWEVENT_MINIMIZED:
+				case SDL_WINDOWEVENT_HIDDEN:
+				case SDL_WINDOWEVENT_FOCUS_LOST:
+//				case SDL_WINDOWEVENT_LEAVE:				//Mouse Left Window
+					break;
+					
+//				case SDL_WINDOWEVENT_CLOSE:
+//					break;
+				default:
+					break;	
+			}
+		}
 		
 		~Window()
 		{

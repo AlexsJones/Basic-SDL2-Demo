@@ -1,5 +1,5 @@
 /**     ______________________________________
-	   /  _______    _______    ________     /\
+       /  _______    _______    ________     /\
       /	 / ___  /\  / ___  /\  / ______/\   / /\
      / 	/ /__/ / / / /  / / / / /\_____\/  / / /
     /  / _____/ / / /  / / / / / /        / / /
@@ -22,7 +22,7 @@
  *  but provide functionality to build content in a scripting language that
  *  would be loaded on start-up. The server would manage the mods, and send
  *  data(images, sound, etc) to the client. The client shouldn't know anything
- * 	about the mods, but the engine should still be able designed to handle it.
+ * 	about the mods, but the engine should still be able to handle it.
  **/
 
 enum PlayerType
@@ -48,6 +48,38 @@ class Player : public Character
 		void setType( const PlayerType& type );
 		
 		const PlayerType& getType();
-//		SDL_Texture* getImage();
 };
+
+///////////////////////////
+///	Definition of POG	///
+///////////////////////////
+class Pog : public Player
+{
+	private:
+		
+	public:
+		Pog()
+		{
+			name = "pog";
+			box.w = 47;
+			box.h = 51;
+			SDL_Rect frame = {0,0,47,51};
+			animation.add( "left", "pog", NULL, frame, 1/*, 0	/*optional defaultFrame*/);
+			frame.y += box.h;
+			animation.add( "right", "pog", NULL, frame, 1 );
+			frame.y += box.h;
+			animation.add( "up", "pog", NULL, frame, 1 );
+			frame.y += box.h;
+			animation.add( "down", "pog", NULL, frame, 1 );
+			frame.y += box.h;
+			animation.add( "up-left", "pog", NULL, frame, 1 );
+			frame.y += box.h;
+			animation.add( "up-right", "pog", NULL, frame, 1 );
+			frame.y += box.h;
+			animation.add( "down-left", "pog", NULL, frame, 1 );
+			frame.y += box.h;
+			animation.add( "down-right", "pog", NULL, frame, 1 );
+		}
+};
+
 #endif
