@@ -124,14 +124,14 @@ void Character::update()
 	physics.update( ACTION, box );
 	position.update();	//Position should be part of physics, box(position) should be part of movement
 
-	if( oldbox.x != box.x || oldbox.y != box.y ){
+	if(ACTION || oldbox.x != box.x || oldbox.y != box.y ){
 		animation.update( ACTION );
 //		printf("ACTION = %d\n",ACTION);
 	} else
 /*	Possibly have animation speed based on an average amount of pixels moved.
  * 	And have setToDefault() called when he stands still for 2 sec for example
  */
-	{ animation.setToDefault(); }
+	{ animation.setToDefaultFrame(); }
 }
 
 

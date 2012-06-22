@@ -279,7 +279,7 @@ void Engine::addPlayer(std::string type )
 
 void Engine::addPlayer(Player &player)
 {
-	player.ID = players.size();
+	player.ID( players.size() );
 	players.push_back( player );
 	camera.follow(&players[ACTIVE_PLAYER]);
 }
@@ -367,8 +367,8 @@ void Engine::showPlayers()
 **/
 	for( auto playerIndex: renderPlayers ){
 			if (DEBUG)
-				drawRect( players[playerIndex.ID].getBox() );
-			show(players[playerIndex.ID], camera.getBox());
+				drawRect( players[playerIndex.ID()].getBox() );
+			show(players[playerIndex.ID()], camera.getBox());
 		}
 }
 

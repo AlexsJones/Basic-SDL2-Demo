@@ -37,22 +37,37 @@ class Player : public Character
 {
 	friend class Engine;
 	private:
-		Uint ID;
+		Uint id;
 		PlayerType type;
-		void setID(Uint ID){ this->ID = ID; }
-		
+		void ID(Uint ID);
+				
 	public:
 		Player();
 		Player( std::string filename, int width, int height );
 
 		void setType( const PlayerType& type );
 		
+		Uint ID();
 		const PlayerType& getType();
 };
 
 ///////////////////////////
 ///	Definition of POG	///
 ///////////////////////////
+/**	This is precisely the type of code that needs to be in a script.
+ * 	What if you want to fine tune the animation speed?
+ * 		You would need to tweak..compile...test...tweak...compile...etc
+ * 
+ * 	Objects need two core functions that can be redefined.
+ * 		update()
+ * 		draw()
+ * 	More Complex objects have Components....Can you modify code of a
+ * 	component or derive a class in a script. This will need to be answered
+ * 	soon.
+ * 
+ * 	...I guess there should be a ComponentManager
+ * 	
+ **/
 class Pog : public Player
 {
 	private:

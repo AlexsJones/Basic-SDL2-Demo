@@ -32,6 +32,8 @@ Player::Player()
 {
 }
 
+void Player::ID(Uint ID){ id = ID; }
+
 Player::Player( std::string filename, int width, int height ) //this width + height  determines size of frames.
 	:Character()
 {
@@ -39,17 +41,19 @@ Player::Player( std::string filename, int width, int height ) //this width + hei
 	name = filename;
 //	animations.add( name, width, height );
 	SDL_Rect frame = {0,0,width,height};
-	animation.add( "left", filename, NULL, frame, 6, 2	);
+	animation.add( "left", filename, NULL, frame, 6, 3	);
 	frame.y += height;
-	animation.add( "right", filename, NULL, frame, 6, 2 );
+	animation.add( "right", filename, NULL, frame, 6, 3 );
 	//	Set default frames to 2 for pirate
-	animation.setDefaultFrame(1,2);
-	animation.setDefaultFrame(2,2);
+//	animation.setDefaultFrame(1,3);
+//	animation.setDefaultFrame(2,3);
 	box.w = width;
 	box.h = height;
 }
 
 void Player::setType( const PlayerType& type ){ this->type = type; }
+
+Uint Player::ID(){ return id; }
 
 const PlayerType& Player::getType(){ return type; }
 

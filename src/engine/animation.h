@@ -34,18 +34,17 @@
  * 	in order to animate the sprite.
  * 
 **/
-class Sprite
+class Sprite	//Currently un-used
 {
 	private:
 //		std::string id;
 		SDL_Rect image;
-		std::vector<SDL_Rect> sprites;  //sequence of frames, contains number of frames: sprites.size()
+		std::vector<SDL_Rect> sprites;
 //		int frames;
 	public:
 };
 class Animation
 {
-	friend class AnimationComponent;
 	protected:
 		std::string id;
 	
@@ -53,14 +52,15 @@ class Animation
 		std::vector<SDL_Rect> frames;  //sequence of frames
 		int speed;
 		
-		int currentFrame;
-		int defaultFrame;
+		Uint currentFrame;
+		Uint defaultFrame;
 		
 		bool reverseAnimate;
 		Uint timeref;
 		
 	public:
 		void ID(std::string id);
+		std::string ID();
 		Animation();
 		Animation(std::string imagefile, int w, int h);
 //		void create( std::string id, std::string imagefile, SDL_Rect* image, SDL_Rect frame, int frames, int defaultFrame );
@@ -69,11 +69,11 @@ class Animation
 		void animate();
 
 		void setSpeed(int speed);
-		void setDefault(int nFrame);
+		void setDefault(Uint nFrame);
 		void setToDefault();
 		
-		const SDL_Rect& get(int nFrame);
-		const SDL_Rect& operator()(int nFrame);
+		const SDL_Rect& get(Uint nFrame);
+		const SDL_Rect& operator()(Uint nFrame);
 		const SDL_Rect& operator()();
 };
 
@@ -94,7 +94,7 @@ class AnimationComponent : public Component
 		
 		void set(Uint animation); 			//	and Engine action-primitve?
 		void set(std::string animation);
-		void setToDefault();
+		void setToDefaultFrame();
 		
 		void setDefaultFrame( Uint nAnimation, Uint nFrame );
 				
