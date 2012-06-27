@@ -3,12 +3,11 @@
 #include <sstream>
 #include "engine.h"
 
-/**TODO::create a game(or Client) class that interfaces with the engine.
- * 
- * 	namespace Pog{ class Engine; class Window;}
- * 
- * 	Possibly have different streams:[Client|Server|Info] That go through
- * 	a stream which timestamps them. Need some kind of system for this.
+/** TODO::create a game(or Client) class that interfaces with the engine.
+ *  namespace Poc{ class Engine; class Window;}
+ *  
+ *  I NEED to come up with a name for this *ENGINE*, give a nice clean API,
+ * 	and give it bindings for python.
 **/
 
 std::string timestamp()

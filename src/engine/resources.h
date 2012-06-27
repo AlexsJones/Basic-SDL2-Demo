@@ -1,17 +1,3 @@
-/**     ______________________________________
-       /  _______    _______    ________     /\
-      /	 / ___  /\  / ___  /\  / ______/\   / /\
-     / 	/ /__/ / / / /  / / / / /\_____\/  / / /
-    /  / _____/ / / /  / / / / / /        / / /
-   /  / /\____\/ / /__/ / / / /_/___     / / /
-  /  /_/ /      /______/ / /_______/\   / / /
- /   \_\/       \______\/  \_______\/  / / /
-/_____________________________________/ / /
-\_____________________________________\/ /
- \_____________________________________\/
-
-**/
-
 #ifndef _ENGINE_RESOURCES_H
 #define _ENGINE_RESOURCES_H
 
@@ -50,11 +36,11 @@ SDL_Texture* loadNewImage( std::string filename )
 		imageVault[filename] = IMG_LoadTexture(Engine::getCanvas(), newfilename.c_str());
 		return imageVault[filename];
 	}
-//	NOTE: Enforcing PNG format!!
-//	newfilename = IMG_DIR + filename + JPG;
-//	imagefile.open(newfilename.c_str());
-//	if (imagefile != NULL)
-//		return IMG_LoadTexture(canvas, newfilename.c_str());
+	
+	newfilename = IMG_DIR + filename + JPG;
+	imagefile.open(newfilename.c_str());
+	if (imagefile != NULL)
+		return IMG_LoadTexture(canvas, newfilename.c_str());
 	
 	printf("Warning:: Failed to Load Image: '%s' in directory: %s\n", filename.c_str(), IMG_DIR);
 	printf("	  Please make sure it has a '%s' extension.\n", PNG);

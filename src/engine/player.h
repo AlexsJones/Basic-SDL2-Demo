@@ -1,28 +1,32 @@
-/**     ______________________________________
-       /  _______    _______    ________     /\
-      /	 / ___  /\  / ___  /\  / ______/\   / /\
-     / 	/ /__/ / / / /  / / / / /\_____\/  / / /
-    /  / _____/ / / /  / / / / / /        / / /
-   /  / /\____\/ / /__/ / / / /_/___     / / /
-  /  /_/ /      /______/ / /_______/\   / / /
- /   \_\/       \______\/  \_______\/  / / /
-/_____________________________________/ / /
-\_____________________________________\/ /
- \_____________________________________\/
-
-**/
-
 #ifndef _ENGINE_PLAYER_H
 #define _ENGINE_PLAYER_H
 
-#include "object.h"
+#include <string>
+#include "SDL2/SDL_rect.h"
+
 #include "character.h"
 
-/** The goal is to not hard code players(items, monsters, blocks too) in C++,
- *  but provide functionality to build content in a scripting language that
- *  would be loaded on start-up. The server would manage the mods, and send
- *  data(images, sound, etc) to the client. The client shouldn't know anything
- * 	about the mods, but the engine should still be able to handle it.
+/** The goal is to make a game engine that is data driven and dynamically
+ * 	creates the content for the game based on scripts.
+ * 
+ * 	This can be done if player has it's own CollisionComponent. The 
+ * 	interface for this component should be able to interact with other
+ * 	collision components, maybe through a CollisonComponentManager.
+ * 
+ * 	Have a previously stored, good position that changes everytime the
+ * 	player moves. If he moves into a wall it will restore his x position 
+ * 	to the previously known good position, for example. It would need to
+ * 	tell physics to hinder the player's x-axis velocity.
+ * 
+ * 	Need separate box for collisions. 
+ *  Possibly AABBox collision detection.
+ * 
+ * 
+ *  A_LEFT
+ * 	A_ATTACK
+ * 
+ * 	S_STEP
+ * 	S_ATTACK
  **/
 
 enum PlayerType
@@ -45,10 +49,10 @@ class Player : public Character
 		Player();
 		Player( std::string filename, int width, int height );
 
-		void setType( const PlayerType& type );
+		inline void setType( const PlayerType& type ){ this->type = type; }
 		
-		Uint ID();
-		const PlayerType& getType();
+		inline Uint ID(){ return id; }
+		inline const PlayerType& getType(){ return type; }
 };
 
 ///////////////////////////
@@ -79,7 +83,9 @@ class Pog : public Player
 			box.w = 47;
 			box.h = 51;
 			SDL_Rect frame = {0,0,47,51};
-			animation.add( "left", "pog", NULL, frame, 1/*, 0	/*optional defaultFrame*/);
+			animation.add( "left", "pog", NULL, frame, 1 );
+			//Should there be a function to assign all frames from one image
+			//to multiple Animations, or even one Animation (with modification).
 			frame.y += box.h;
 			animation.add( "right", "pog", NULL, frame, 1 );
 			frame.y += box.h;

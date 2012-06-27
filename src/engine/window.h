@@ -1,21 +1,23 @@
-/**     ______________________________________
-       /  _______    _______    ________     /\
-      /	 / ___  /\  / ___  /\  / ______/\   / /\
-     / 	/ /__/ / / / /  / / / / /\_____\/  / / /
-    /  / _____/ / / /  / / / / / /        / / /
-   /  / /\____\/ / /__/ / / / /_/___     / / /
-  /  /_/ /      /______/ / /_______/\   / / /
- /   \_\/       \______\/  \_______\/  / / /
-/_____________________________________/ / /
-\_____________________________________\/ /
- \_____________________________________\/
-
-**/
-
 #ifndef _ENGINE_WINDOW_H
 #define _ENGINE_WINDOW_H
 
-#include "macro.h"
+#include "SDL2/SDL_image.h"
+//#include "SDL2/SDL_render.h"
+//#include "SDL2/SDL_events.h"
+//#include "SDL2/SDL_rect.h"
+#include <string>
+
+#define TITLE "Plane of Craftiness"
+#define RELEASE "[ALpha]"
+#ifndef DATE
+	#define DATE ""
+#endif
+
+#define WINDOW_WIDTH 800
+#define WINDOW_HEIGHT 600
+
+typedef unsigned int Uint;
+
 /**	Needs input container that accepts window events.
  * 
  * Note: IF input is not grabbed, everytime window is focused it needs
@@ -42,114 +44,18 @@ class Window
 		int minWidth;
 		int minHeight;
 	public:
-		Window() : minWidth(480), minHeight(320)
-		{
-			box.x = box.y = 0;
-			box.w = WINDOW_WIDTH;
-			box.h = WINDOW_HEIGHT;
-		}
-		
-		SDL_Renderer* create()
-		{
-			window = SDL_CreateWindow((TITLE" "RELEASE" "DATE),
-						SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-						WINDOW_WIDTH, WINDOW_HEIGHT,
-						SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
-						
-			SDL_GetCurrentDisplayMode(SDL_GetWindowDisplay(window), &displayMode);
-			SDL_SetWindowDisplayMode(window, &displayMode);
-			
-			//printf("Window::Error: %s\n\n",SDL_GetError());
-						
-			windowicon = IMG_Load("icon.png");
-			SDL_SetWindowIcon( window, windowicon );
-			
-			SDL_GetWindowSize( window, &box.w, &box.h );
-			
-			canvas = SDL_CreateRenderer(window, -1, 0 );
-			return canvas;
-		}
-
-		void restore(){
-			SDL_SetWindowFullscreen(window, SDL_FALSE);
-			SDL_SetWindowGrab(window, SDL_FALSE);
-		}
-		
-		void fullscreen(){
-				SDL_SetWindowFullscreen(window, SDL_TRUE);
-				SDL_SetWindowGrab(window, SDL_TRUE);
-		}
-		
-		void toggleFullscreen(){
-			if (hasFlag(SDL_GetWindowFlags(window), SDL_WINDOW_FULLSCREEN) )
-				restore();
-			else fullscreen();
-		}
-		
-/** Window::resize()
-*	This function automatically sets-up the viewport to the window size at
-*	the position(0,0). This allows camera to be centered over player correctly.
-* 	resize() also prevents window from being too small.
-**/
-		void resize()
-		{
-			SDL_GetWindowSize( window, &box.w, &box.h );
-			if (box.w < minWidth){
-				box.w = minWidth;
-				SDL_SetWindowSize(window, box.w, box.h);
-			}
-			if (box.h < minHeight){
-				box.h = minHeight;
-				SDL_SetWindowSize(window, box.w, box.h);
-			}
-			SDL_RenderSetViewport( canvas, &box );
-		}
-		/*TODO: handling focus, engine mainly needs this?*/
-		void setMinWidth(Uint w){ minWidth = w; }
-		void setMinHeight(Uint h){ minHeight = h; }
-		void setMinSize(Uint w, Uint h){ setMinWidth( w ); setMinHeight( h ); }
-		
-		const SDL_Rect &getBox(){ return box; }
-		
-		bool isFullscreen(){ return hasFlag(SDL_GetWindowFlags(window), SDL_WINDOW_FULLSCREEN); }
-		
-		void update( SDL_WindowEvent event )
-		{
-			switch ( event.type )
-			{
-				case SDL_WINDOWEVENT_RESIZED:
-					break;
-				case SDL_WINDOWEVENT_MAXIMIZED:
-					break;
-				case SDL_WINDOWEVENT_RESTORED:
-					break;
-					
-				case SDL_WINDOWEVENT_SHOWN:
-					break;
-				case SDL_WINDOWEVENT_FOCUS_GAINED:
-					break;
-//				case SDL_WINDOWEVENT_ENTER:				//Mouse Entered Window
-					break;
-					
-				case SDL_WINDOWEVENT_MINIMIZED:
-				case SDL_WINDOWEVENT_HIDDEN:
-				case SDL_WINDOWEVENT_FOCUS_LOST:
-//				case SDL_WINDOWEVENT_LEAVE:				//Mouse Left Window
-					break;
-					
-//				case SDL_WINDOWEVENT_CLOSE:
-//					break;
-				default:
-					break;	
-			}
-		}
-		
-		~Window()
-		{
-			SDL_FreeSurface(windowicon);
-			SDL_DestroyRenderer(canvas);
-			SDL_DestroyWindow(window);
-		}
-
+		Window();
+		SDL_Renderer* create();
+		void restore();
+		void fullscreen();		
+		void toggleFullscreen();
+		void resize();
+		void setMinWidth(Uint w);
+		void setMinHeight(Uint h);
+		void setMinSize(Uint w, Uint h);
+		const SDL_Rect &getBox();
+		bool isFullscreen();
+		void update( SDL_WindowEvent event );
+		~Window();
 };
 #endif

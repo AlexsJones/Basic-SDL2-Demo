@@ -1,25 +1,5 @@
-/**     ______________________________________
-       /  _______    _______    ________     /\
-      /	 / ___  /\  / ___  /\  / ______/\   / /\
-     / 	/ /__/ / / / /  / / / / /\_____\/  / / /
-    /  / _____/ / / /  / / / / / /        / / /
-   /  / /\____\/ / /__/ / / / /_/___     / / /
-  /  /_/ /      /______/ / /_______/\   / / /
- /   \_\/       \______\/  \_______\/  / / /
-/_____________________________________/ / /
-\_____________________________________\/ /
- \_____________________________________\/
-
-**/
-
 #ifndef _ENGINE_ENGINE_H
 #define _ENGINE_ENGINE_H
-
-#define RELEASE "[ALpha]"
-#ifndef DATE
-	#define DATE ""
-#endif
-#define TITLE "Plane of Craftiness"
 
 #include <string>
 #include <fstream>
@@ -37,8 +17,6 @@ typedef unsigned int Uint;
 
 #include "timer.h"
 
-#define WINDOW_WIDTH 800
-#define WINDOW_HEIGHT 600
 #include "window.h"
 
 #define DATA_DIR "data/"
@@ -46,7 +24,7 @@ typedef unsigned int Uint;
 
 #include "map.h"	//Engine shouldn't have a map?
 #include "object.h"
-#include "character.h"
+//#include "character.h"
 #include "player.h"
 #include "camera.h"
 

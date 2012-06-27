@@ -1,17 +1,3 @@
-/**     ______________________________________
-       /  _______    _______    ________     /\
-      /	 / ___  /\  / ___  /\  / ______/\   / /\
-     / 	/ /__/ / / / /  / / / / /\_____\/  / / /
-    /  / _____/ / / /  / / / / / /        / / /
-   /  / /\____\/ / /__/ / / / /_/___     / / /
-  /  /_/ /      /______/ / /_______/\   / / /
- /   \_\/       \______\/  \_______\/  / / /
-/_____________________________________/ / /
-\_____________________________________\/ /
- \_____________________________________\/
-
-**/
-
 #ifndef _ENGINE_TIMER_H
 #define _ENGINE_TIMER_H
 
@@ -19,11 +5,8 @@
 
 typedef unsigned int Uint;
 
-/**Timer class 
- * Only the Engine can set the values in the static Ticks:: class.
- * 
- * Possible features TODO:
- * 
+/** NOTE: Only the Engine can set the values in the static Ticks:: class.
+ *  TODO: Convert Ticks into a namespace?
 **/
 
 class Timer
@@ -41,7 +24,7 @@ class Timer
 		const bool& timerIsRunning(){return timerStarted;}
 		const bool& timerIsPaused()	{return timerStarted;}
 		
-		void start(){
+		inline void start(){
 			if (!timerStarted){
 				startTime = SDL_GetTicks();
 				timerStarted = true;
@@ -49,26 +32,26 @@ class Timer
 			}
 		}
 		
-		void update(){
+		inline void update(){
 			if ( timerStarted && !isPaused )
 				currentTime = SDL_GetTicks() - startTime - pausedTime;
 		}
 		
-		void pause(){
+		inline void pause(){
 			if (timerStarted && !isPaused){
 				isPaused = true;
 				pausedTime = currentTime;
 			}
 		}
 				
-		void resume(){
+		inline void resume(){
 			if (timerStarted && isPaused){
 				isPaused = false;
 				pausedTime = SDL_GetTicks() - pausedTime - startTime;		
 			}
 		}
 		
-		void pauseResume(){
+		inline void pauseResume(){
 			if (timerStarted){
 				if (!isPaused)
 					pause();
@@ -76,7 +59,7 @@ class Timer
 			}
 		}
 		
-		void stop()
+		inline void stop()
 		{
 			timerStarted = false;
 			isPaused = true;
@@ -88,7 +71,7 @@ class Timer
 		/** Returns true if time in 'ms' have passed since your own 
 		 *  reference time.
 		**/
-		static bool updateInterval( int ms, Uint& rtime ){
+		inline static bool updateInterval( int ms, Uint& rtime ){
 			if (rtime <= SDL_GetTicks() - ms){
 				rtime = SDL_GetTicks() - ( SDL_GetTicks() % ms );		//align to nearest 'ms' interval
 				return true;
@@ -101,7 +84,7 @@ class Timer
 		 * 	If time in 'ms' haven't passed, it retruns false, therefore
 		 *  ending the while loop.
 		**/
-		static bool updateInterval( float ms, float& rtime ){
+		inline static bool updateInterval( float ms, float& rtime ){
 			if (rtime <= SDL_GetTicks() - ms){
 				rtime += ms;
 				return true;
@@ -120,7 +103,7 @@ class Ticks
 		static Uint fps;
 		static void start(){ startTicks = SDL_GetTicks(); }
 		
-		static void update(){
+		inline static void update(){
 			deltaTicks = SDL_GetTicks() - startTicks;
 			if (!deltaTicks){
 				deltaTicks = 1;
@@ -129,7 +112,7 @@ class Ticks
 			fps = 1000 / deltaTicks;
 		}
 		
-		static void capFPS(const Uint& maxfps){
+		inline static void capFPS(const Uint& maxfps){
 			update();
 			if( 1000 / deltaTicks >= maxfps ){
 				SDL_Delay( ( 1000 / maxfps) - deltaTicks );
@@ -137,6 +120,7 @@ class Ticks
 			}
 			//'double precision' FPS capping method ;)
 			//Once game gets bigger, this may be uneccessary
+			//I should be using a High Resolution Timer
 			if( 1000 / deltaTicks >= maxfps ){
 				SDL_Delay( ( 1000 / maxfps) - deltaTicks );
 				update();
@@ -144,12 +128,12 @@ class Ticks
 		}
 	public:
 		//Get the delta time
-		static const Uint getDeltaTicks(){
+		inline static const Uint getDeltaTicks(){
 			if (!deltaTicks)
 				deltaTicks = 1;
 			return deltaTicks; }
 		//Get the FPS of rendering and logic cycle
-		static const Uint getFPS(){
+		inline static const Uint getFPS(){
 			if(!fps) fps=1;
 			return fps;
 		}

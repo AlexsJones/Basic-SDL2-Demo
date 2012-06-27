@@ -1,31 +1,5 @@
 
-#include "engine.h"
-#include "macro.h"
-
-/**	Note: If player needs to be updated multiple times, there is a very
- * 	good chance he could glitch through things(especially if there is low
- * 	fps) The engine needs to be able to handle it. With the current system this
- * 	isn't really possible. There needs to be a good collision detection system.
-
- * 	This can be done if player has it's own CollisionComponent. The 
- * 	interface for this component should be able to interact with other
- * 	collision components, maybe through a CollisonComponentManager.
- * 
- * 	Have a previously stored, good position that changes everytime the
- * 	player moves. If he moves into a wall it will restore his x position 
- * 	to the previously known good position, for example. It would need to
- * 	tell physics to hinder the player's x-axis velocity.
- * 
- * 	Need separate box for collisions. 
- *  Possibly AABBox collision detection.
- * 
- * 
- *  A_LEFT
- * 	A_ATTACK
- * 
- * 	S_STEP
- * 	S_ATTACK
-**/
+#include "player.h"
 
 Player::Player()
 	:Character()
@@ -39,30 +13,23 @@ Player::Player( std::string filename, int width, int height ) //this width + hei
 {
 	Player();
 	name = filename;
-//	animations.add( name, width, height );
+//	animation.add( "left", {{0,0,47,51}}, 1 );
+//	animation.add( name, width, height );
 	SDL_Rect frame = {0,0,width,height};
 	animation.add( "left", filename, NULL, frame, 6, 3	);
 	frame.y += height;
 	animation.add( "right", filename, NULL, frame, 6, 3 );
-	//	Set default frames to 2 for pirate
+/*	Set default frames to 2 for pirate	*/
 //	animation.setDefaultFrame(1,3);
 //	animation.setDefaultFrame(2,3);
 	box.w = width;
 	box.h = height;
 }
 
-void Player::setType( const PlayerType& type ){ this->type = type; }
-
-Uint Player::ID(){ return id; }
-
-const PlayerType& Player::getType(){ return type; }
-
 
 ///////////////////////////
 ///		Random Tests	///
 ///////////////////////////
-
-
 class Foo
 {
 	private:

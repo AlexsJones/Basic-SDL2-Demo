@@ -1,23 +1,13 @@
-/**     ______________________________________
-       /  _______    _______    ________     /\
-      /	 / ___  /\  / ___  /\  / ______/\   / /\
-     / 	/ /__/ / / / /  / / / / /\_____\/  / / /
-    /  / _____/ / / /  / / / / / /        / / /
-   /  / /\____\/ / /__/ / / / /_/___     / / /
-  /  /_/ /      /______/ / /_______/\   / / /
- /   \_\/       \______\/  \_______\/  / / /
-/_____________________________________/ / /
-\_____________________________________\/ /
- \_____________________________________\/
-
-**/
-
 #ifndef _ENGINE_ANIMATION_H
 #define _ENGINE_ANIMATION_H
+
+#include "timer.h"
+
+#include "SDL2/SDL_image.h"
 #include <string>
 #include <vector>
 
-#include "component.h"
+typedef unsigned int Uint;
 /**	TODO: Include an 'std::initializer_list' for the animation structure.
   * 	
   * 	Need to know where to start reading the file for animation if there
@@ -43,26 +33,31 @@ class Sprite	//Currently un-used
 //		int frames;
 	public:
 };
-class Animation
+
+//  sAnimation was changed because there was a naming conflict within
+//  Component::Animation. Once there is a game namespace or something, it
+//	will be reverted or changed to something better.
+class sAnimation
 {
 	protected:
 		std::string id;
 	
 		bool locked;
-		std::vector<SDL_Rect> frames;  //sequence of frames
+		std::vector<SDL_Rect> frames;	//sequence of frames
 		int speed;
 		
 		Uint currentFrame;
 		Uint defaultFrame;
 		
-		bool reverseAnimate;
 		Uint timeref;
+		bool reverseAnimate;
+//		bool loop;						//Does the animation loop, or just play and start from begining
 		
 	public:
-		void ID(std::string id);
-		std::string ID();
-		Animation();
-		Animation(std::string imagefile, int w, int h);
+		sAnimation();
+		sAnimation(std::string imagefile, int w, int h);
+		inline void ID(std::string id){ this->id = id; }
+		inline std::string ID(){ return id; }
 //		void create( std::string id, std::string imagefile, SDL_Rect* image, SDL_Rect frame, int frames, int defaultFrame );
 		void add(SDL_Rect frame);
 		
@@ -72,34 +67,10 @@ class Animation
 		void setDefault(Uint nFrame);
 		void setToDefault();
 		
+		inline const SDL_Rect& get(){ return get(currentFrame); }
 		const SDL_Rect& get(Uint nFrame);
 		const SDL_Rect& operator()(Uint nFrame);
-		const SDL_Rect& operator()();
+		inline const SDL_Rect& operator()(){ return get(currentFrame); }
 };
 
-class AnimationComponent : public Component
-{
-	private:
-		std::vector<Animation> animations;	//Should this be a map<Animation, std::string>
-		int currentAnimation;
-		SDL_Rect box;
-		
-	public:
-		AnimationComponent();
-		void update(){};
-		void update(Uint8& ACTION);
-		void animate(int);
-		
-		void add( std::string id, std::string imagefile, SDL_Rect* image, SDL_Rect frame, int frames, int defaultFrame=0 );
-		
-		void set(Uint animation); 			//	and Engine action-primitve?
-		void set(std::string animation);
-		void setToDefaultFrame();
-		
-		void setDefaultFrame( Uint nAnimation, Uint nFrame );
-				
-		const SDL_Rect& get(Uint nAnimation);
-		const SDL_Rect& operator()();
-
-};
 #endif

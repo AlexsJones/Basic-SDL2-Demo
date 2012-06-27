@@ -1,12 +1,8 @@
-#include "timer.h"
-#include "component.h"
+
+#include "component/physics.h"
 #include "macro.h"
 
-void MovementComponent::update()
-{
-}
-
-PhysicsComponent::PhysicsComponent(SDL_Rect box)
+Component::Physics::Physics(SDL_Rect box)
 	:velocity(140.f), timeref(SDL_GetTicks())
 {
 	vel.x = vel.y = 0.f;
@@ -24,10 +20,10 @@ PhysicsComponent::PhysicsComponent(SDL_Rect box)
 //	pos.y = -(box.h / 2.0);
 }
 
-void PhysicsComponent::update()
+void Component::Physics::update()
 {}
 
-void PhysicsComponent::update(Uint8& ACTION, SDL_Rect& box)
+void Component::Physics::update(Uint8& ACTION, SDL_Rect& box)
 {
 //	update the acceleration and keep with bounds
 //	update the velocity using the new acc. and deltaTime
@@ -73,36 +69,4 @@ while (Timer::updateInterval(timestep, timeref)){
 	box.y = pos.y;
 }
 if (!ACTION){ timeref = SDL_GetTicks(); }
-}
-
-float PhysicsComponent::Velocity(){ return velocity; }
-
-
-
-
-
-void PositionComponent::update()
-{
-}
-
-
-InputComponent::InputComponent()
-{
-/*	This code allows the InputComponent to be a manager of itself. It maintains
- * 	a list of all InputComponents and adds itself when it is created.
-	if (!inputComponents) inputComponents = new std::vector<Input>;
-	inputComponents->push_back(*this);
-*/
-}
-
-void InputComponent::update()
-{	
-}
-	
-void InputComponent::checkFor(SDL_Keycode keycode)
-{
-	for(std::vector<KeyBinding>::iterator itr = keyBindings.begin(); itr != keyBindings.end(); itr++)
-	{
-		if(itr->key == keycode){}//movement->move(itr.action)
-	}
 }
