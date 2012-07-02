@@ -18,7 +18,7 @@ LIBDIR=$(PREFIX)/lib
 BIN=$(PREFIX)/poc	##$(DATE)
 
 CC=g++
-CFLAGS= -c -std=c++0x -Wall -pedantic
+CFLAGS= -g -c -std=c++0x -Wall -pedantic
 LINKERFLAGS=-Wl,-rpath,\$$ORIGIN/lib/ -static-libgcc
 DEFINES= -DDATE='"'$$DATE'"'
 INCLUDES= -Iinclude -Iengine
@@ -57,8 +57,6 @@ INSTALL_DIRS=$(PROJECT_DIRS:$(PREFIX)=$(INSTALL_PREFIX))
 install: $(INSTALL_DIRS)
 	
 $(PREFIX)$(INSTALL_PREFIX):
-	echo $@
-	echo $<
 	$(INSTALL) -d $@
 	$(INSTALL) $< $@
 ##  END of TEST

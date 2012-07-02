@@ -1,7 +1,7 @@
 #ifndef _ENGINE_CAMERA_H
 #define _ENGINE_CAMERA_H
 
-#include "player.h"
+#include "object.h"
 
 #include "SDL2/SDL_rect.h"
 
@@ -20,9 +20,8 @@
 
 class Camera : public iObject
 {
-//		SDL_Point offset;
-		SDL_Rect map;
-		Player* player;
+		SDL_Rect bounds;			//make a weak pointer
+		Object* followedObject;		//make a weak pointer
 		bool active;
 	public:
 		Camera() :active(false)
@@ -30,46 +29,53 @@ class Camera : public iObject
 			box.w = box.h = 0;
 			box.x = -(box.w/2);
 			box.y = -(box.h/2);
-			map.x = map.y = map.w = map.h = 0;
-			//offset.x = offset.y = 0;
+			bounds.x = bounds.y = bounds.w = bounds.h = 0;
 		}
 		
-		void setMap(SDL_Rect map){
-			this->map = map;
+		inline void setBounds( SDL_Rect newBounds ){
+			this->bounds = newBounds;
 		}
-		void follow(Player* player){
-			//if single player
-			this->player = player;
+		inline void follow( Object* newObject ){
+			this->followedObject = newObject;
 			active = true;
 		}
-		void resize(SDL_Rect window){
-			//SDL_GetWindowSize( window, &box.w, &box.h);
+		inline Object* getFocus()
+		{
+			return followedObject;
+		}
+		void resize( SDL_Rect window ){
 			box.w = window.w;
 			box.h = window.h;
 		}
-		void update()
+		inline void update()
 		{
-			if (active && player)
+			if ( active && followedObject )
 			{
-				//Center camera over player.
-				box.x = (player->getBox().x + (player->getBox().w / 2)) - (box.w / 2);
-				box.y = (player->getBox().y + (player->getBox().h / 2)) - (box.h / 2);
+			/*	Since the camera's position is based on an object, update()
+			 * 	the object first.
+			 */	
+				followedObject->update();
+				SDL_Rect objectBox;
+				objectBox = followedObject->getBox();
+			/*	Center camera over player.	*/
+				box.x = (objectBox.x + (objectBox.w / 2)) - (box.w / 2);
+				box.y = (objectBox.y + (objectBox.h / 2)) - (box.h / 2);
 
-				//if camera is close to map edge
-				Map::keepInBounds(box, map);
+			/*	if camera is close to map edge.	*/
+				Map::keepInBounds(box, bounds);
 				
-				//If the map is smaller than camera. Center the camera over the map.
-				if (map.w < box.w){ box.x = map.x + (map.w / 2) - (box.w / 2); }
-				if (map.h < box.h){ box.y = map.y + (map.h / 2) - (box.h / 2); }	
+			/*	If the map is smaller than camera. Center the camera over the map.	*/       
+				if (bounds.w < box.w){ box.x = bounds.x + (bounds.w / 2) - (box.w / 2); }
+				if (bounds.h < box.h){ box.y = bounds.y + (bounds.h / 2) - (box.h / 2); }	
 			}
 		}
 		
-		void detach(){
-			player = NULL;
+		inline void detach(){
+			followedObject = NULL;
 			active = false;
 		}
 				
-		const bool& isActive(){ return active; }
+		inline const bool& isActive(){ return active; }
 
 };
 #endif

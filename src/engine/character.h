@@ -10,6 +10,7 @@
 #include "component/physics.h"
 #include "object.h"
 
+//#include "component/input.h"
 namespace Component { class Input; }
 
 class Character : public Object
@@ -29,7 +30,7 @@ class Character : public Object
 			SDL_Rect oldbox;			//put into position, along with box
 		Component::Physics physics;		
 		Component::Animation animation;
-		Component::Input* input; //Engine Assigns Player1 controls?
+		Component::Input* input; //Engine Assigns Player1 controls*?
 		
 	//UpdateComponent??	//Could be used for managing which Components update when.	
 	//--->Going into PhysicsComponent

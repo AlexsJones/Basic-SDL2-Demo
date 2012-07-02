@@ -2,6 +2,8 @@
 #include "character.h"
 #include "macro.h"
 
+#include "SDL2/SDL_keycode.h"
+
 Character::Character()
 	 :Object(CHARACTER), ACTION(0), physics(box)
 {
@@ -56,16 +58,38 @@ void Character::move(SDL_KeyboardEvent& keyevent)
 			default: break;
 		}
 	}
+
 }
 ///#### End of Key Input ####
 
 
 void Character::update()
 {
+//	##TEST
+/**	SEG FAULTS  (I think it is an error with SDL2)
+	Uint8* state = SDL_GetKeyboardState(NULL);
+			if (state[SDLK_LEFT] == SDL_PRESSED)
+				ACTION |= LEFT;
+			else ACTION &= LEFT;
+			if ( state[SDLK_RIGHT] == SDL_PRESSED)
+				ACTION |= RIGHT;
+			else ACTION &= RIGHT;
+			if ( state[SDLK_UP] == SDL_PRESSED)
+				ACTION |= UP;
+			else ACTION &= UP;
+			if ( state[SDLK_DOWN] == SDL_PRESSED)
+				ACTION |= DOWN;
+			else ACTION &= DOWN;
+	delete[] state;
+**/
+//	##END TEST
+	
+	
 	oldbox = box;
 	//box = physics.update( ACTION, box );
 	physics.update( ACTION, box );
 	position.update();	//Position should be part of physics, box(position) should be part of movement
+	//input->update();
 
 	if(ACTION || oldbox.x != box.x || oldbox.y != box.y ){
 		animation.update( ACTION );

@@ -43,7 +43,7 @@ class Player : public Character
 	private:
 		Uint id;
 		PlayerType type;
-		void ID(Uint ID);
+		inline void ID(Uint ID){ id = ID; }
 				
 	public:
 		Player();

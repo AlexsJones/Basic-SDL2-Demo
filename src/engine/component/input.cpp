@@ -10,7 +10,8 @@ Component::Input::Input()
 }
 
 void Component::Input::update()
-{	
+{
+	
 }
 	
 void Component::Input::checkFor(SDL_Keycode keycode)

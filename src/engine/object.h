@@ -23,16 +23,19 @@ class iObject
 };
 class Object : public iObject
 {
-	public: //Public because engine currently access ID directly.
-		Uint8 ID;
+	public:
+		Uint8 id;
 		std::string name;
 		ObjectType objectType;
 		
 		Object() : objectType(NONE){}
 		Object(ObjectType type) : objectType(type){}
-		void resize(Uint w, Uint h){box.w = w; box.h = h;}
+//		virtual void draw() { }
 		
-		// Needed for the engine to sort the objects for rendering.
+		inline Uint8 ID(){return id;}
+		inline void resize(Uint w, Uint h){box.w = w; box.h = h;}
+		
+	/* Needed for the engine to sort the objects for rendering.	*/
 		inline bool operator<(const Object cObject) const { return box.y + box.h < cObject.box.y + cObject.box.h; }
 		~Object(){}
 };

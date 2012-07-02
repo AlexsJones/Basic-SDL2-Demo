@@ -6,8 +6,6 @@ Player::Player()
 {
 }
 
-void Player::ID(Uint ID){ id = ID; }
-
 Player::Player( std::string filename, int width, int height ) //this width + height  determines size of frames.
 	:Character()
 {

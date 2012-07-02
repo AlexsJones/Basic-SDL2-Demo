@@ -10,9 +10,9 @@
 \_____________________________________\/ /
  \_____________________________________\/
 
-[Insert License Here]
-No license....yet. If this game is released under open source it will probably be
-released as LGPL, although this will may not apply to the images, textures, sounds, etc.
+[Insert Main License Here]
 
-This license does not necessarily apply to the entire application and its data resources. If a file has a different license, the license will be found inside the same directory as the file.
 **/
+
+[Append Other Licenses Here] (e.g. Font Licenses, and SDL)
+

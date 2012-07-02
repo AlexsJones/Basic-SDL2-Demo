@@ -5,26 +5,22 @@
 
 #define MAP_DIR DATA_DIR "worlds/"
 
-//#define MAPSIZE 1024		//change to 2^MAPSIZE?
+//#define MAPSIZE 1024		//change to 2^MAPSIZE?(Like Sauerbraten) MAPSIZE 8 == 256
 #define BLOCK_SIZE 32		//individual grid size in pixels (should match grass texture size)
 #define CHUNK_SIZE 20		//amount of blocks grouped together for loading/unloading
-#define MAP_WIDTH 100		//
-#define MAP_HEIGHT 100
+#define MAP_WIDTH 10		//
+#define MAP_HEIGHT 10
 
 #define TOTAL_CHUNKS ( (MAP_WIDTH/CHUNK_SIZE) * (MAP_WIDTH/CHUNK_SIZE) )
 
-/** The map may be randomly generated with some water, trees, region-types, rocks,
+/** The Map will be large, give it its own namespace.
+ * 
+ * 
+ *  The map may be randomly generated with some water, trees, region-types, rocks,
  * 	etc(basic map elements). The Map is planned to be a set size on
  * 	creation. So, no infinite maps. All map specifications will be inside
  * 	a script that users can modify to have a custom server.
  * 
- * 	Future features(other than the basics):
- * 			
- * 	
- * 	Coordinates-->getBox / BLOCK_SIZE + Mapwidth*blocksize
- *  pos --> chunk * chunksize + chunkpos
- *  
- * 	With a velocity of 200 it would take 10.4 minutes to travel 4 million pixels.
  * 
 **/
 
@@ -64,7 +60,7 @@ class Map
 			box.y = -(box.h / 2);
 		}
 
-		static void keepInBounds(SDL_Rect& box, SDL_Rect Bounds){
+		inline static void keepInBounds(SDL_Rect& box, SDL_Rect Bounds){
 			//CALL Engine::keepInBounds(box, this->box);
 			if (box.x < Bounds.x){ box.x = Bounds.x; }
 			else if (box.x + box.w > Bounds.x + Bounds.w){ box.x = Bounds.x + Bounds.w - box.w; }
@@ -94,12 +90,13 @@ class Map
 			map.close();
 		}
 		
+	/*	Spawn or new thread and/or show a loading screen.	*/
 		void load(){
 			loaded = true;
 		}
 		
-		//This method basically calculates the coordinates the camera intersects,
-		//and returns an area to render.
+	/*	This method basically calculates the coordinates the camera intersects,
+		and returns an area to render. */
 		const SDL_Rect getView( SDL_Rect view )
 		{ 
 			//align to coordinates
@@ -113,8 +110,7 @@ class Map
 		
 		const SDL_Rect &getBox(){ return box; }
 		
-/** It is not called isLoaded because there may be multiple maps(buildings,dungeons)
- * 	that are loaded, but not to be shown. **/
+		/*	Is this needed?	*/
 		bool isActive(){return loaded;} //return loaded && active
 };
 #endif

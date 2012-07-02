@@ -7,7 +7,7 @@ typedef unsigned int Uint;
 
 /** NOTE: Only the Engine can set the values in the static Ticks:: class.
  *  TODO: Convert Ticks into a namespace?
-**/
+ **/
 
 class Timer
 {
@@ -20,9 +20,9 @@ class Timer
 	public:
 		Timer(): startTime(0), currentTime(0), pausedTime(0), timerStarted(false), isPaused(true){}
 		//getters
-		const Uint& getGameTime(){return currentTime;}
-		const bool& timerIsRunning(){return timerStarted;}
-		const bool& timerIsPaused()	{return timerStarted;}
+		const Uint& getGameTime(){ return currentTime; }
+		const bool& timerIsRunning(){ return timerStarted; }
+		const bool& timerIsPaused()	{ return timerStarted; }
 		
 		inline void start(){
 			if (!timerStarted){

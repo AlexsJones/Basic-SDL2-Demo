@@ -22,25 +22,17 @@ typedef unsigned int Uint;
 #define DATA_DIR "data/"
 #define IMG_DIR (DATA_DIR "images/")
 
-#include "map.h"	//Engine shouldn't have a map?
+#include "map.h"
 #include "object.h"
-//#include "character.h"
 #include "player.h"
 #include "camera.h"
 
 #define MAX_FPS 60
 #define MAX_PLAYERS 256
 
-/*	TODO:	IMPLEMENT COORDINATES
- * 			Come up with a good structure for all the functions/classes.
- * 			Remove all 'static' variables because Android doesn't like them.
- * 
- * 		Wrap up functionality better 
- * 
- * 	Many engine functions will probably be place into a 
- * 			game class and GUI/menu class.
- * 
- * 		If Engine was a namespace, functions could be forward declared
+/*	Engine contains some of the oldest code in this project, some is poorly
+ * 	written. Needs to be combed through and split up and encapsulate the
+ * 	functionality.
  * 
  * 		Rename function to getImageDimensions()
  * */
@@ -48,8 +40,6 @@ typedef unsigned int Uint;
 #define BLOCK_SHEET "blocks"
 #define PNG ".png"
 #define JPG ".jpg"
-
-
 
 class Engine
 {
@@ -71,13 +61,16 @@ class Engine
 		std::list<Player> renderPlayers;
 		Uint ACTIVE_PLAYER;
 		
+		//Poc::Image.load()
+		//Poc::Sound.load()
+		//Poc::Music.load()
+		//Poc::Animation.load()
 		static std::map<std::string, SDL_Texture*> imageVault;
 		
+		Timer timer;
 		
 		SDL_Rect backgroundClip;
 		SDL_Texture* backgroundTile;
-		Timer timer;
-		
 	public:
 		Engine();
 		bool init();
@@ -103,15 +96,15 @@ class Engine
 
 		void drawRect(SDL_Rect rect);
 
+	/*	These two functions will be wrappers for the rendering?.	*/
 		static void applyTexture( SDL_Texture* source, SDL_Rect& clip );
 		static void applyTexture( SDL_Texture* source, SDL_Rect& sourceclip, SDL_Rect& clip );
 		
 		static void keepInBounds(SDL_Rect& box, SDL_Rect& Bounds);
-		SDL_Texture* loadMap( std::string filename );	
 			
 		void addPlayer(std::string type);
 		void addPlayer(Player &player);
-		void showPlayers();
+		void drawPlayers();
 		void handleInput(SDL_KeyboardEvent& keyevent);
 		
 		static void tileTexture( SDL_Texture* source, SDL_Rect& clip);
@@ -122,19 +115,17 @@ class Engine
 		void renderClear();
 		void cleanUp();
 		
-		//getters
-		const SDL_Event& getEvent();
-		static SDL_Renderer* getCanvas();
+		inline static Window* getWindow(){ return &window; }
+	/*	TODO:Why am I not using these functions???	*/
+		inline SDL_Event& getEvent(){ return event; }
+		inline static SDL_Renderer* getCanvas(){ return canvas; }
 		
-		void showSplash();
-		void closeSplash();
 		void setMenuBackground( std::string filename );
 		void tileMenuBackground();
-		void loadLevel();
-		
+
+		void* loadMap(std::string filename);		
 		void debug();
 		
-		static Uint ISOMETRIC;
 		static Uint DEBUG; 
 		
 		~Engine();

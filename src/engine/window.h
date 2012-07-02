@@ -13,13 +13,16 @@
 	#define DATE ""
 #endif
 
+#ifndef OPENGL_BACKEND
+ #define OPENGL_BACKEND 0
+#endif
+
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
 
 typedef unsigned int Uint;
 
-/**	Needs input container that accepts window events.
- * 
+/**	Needs to handle input.
  * Note: IF input is not grabbed, everytime window is focused it needs
  * 			to check if window is fullscreen. Ex. If user alt-tabs out of
  * 			fullscreen, the window looks restored, but behaves oddly.
@@ -31,15 +34,15 @@ typedef unsigned int Uint;
  * 
  * 			There should be some type of scaling(of images) for small windows.
  * 
- * 	NOTE: Window's position is absolutely useless
+ * 	NOTE: SDL_Window's position is absolutely useless
 **/
 class Window
 {
 	private:
 		SDL_Rect box;
 		SDL_Window* window;
-		SDL_DisplayMode displayMode;
 		SDL_Renderer* canvas;
+		SDL_DisplayMode displayMode;
 		SDL_Surface* windowicon;
 		int minWidth;
 		int minHeight;

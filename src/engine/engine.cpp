@@ -2,17 +2,24 @@
 #include "engine.h"
 
 #include <algorithm>
+/** TODO: Create resource/content/asset manager for:
+ * 	images
+ *  sound
+ *  music
+ * And Possibly:
+ *  animations
+ *  menus
+ *  even Players or Objects?
+**/
 
-/**	Instantiation of some static variables	**/
+/*	Instantiation of some static variables :(	*/
 	Window Engine::window;
 	SDL_Renderer* Engine::canvas;
 	std::map<std::string, SDL_Texture*> Engine::imageVault;
 	Uint Ticks::startTicks;
 	Uint Ticks::deltaTicks;
 	Uint Ticks::fps;
-	Uint Engine::ISOMETRIC(0);
 	Uint Engine::DEBUG(0);
-
 
 Engine::Engine()
 	: quit(false), isPaused(false), hudRefreashRefTime(0), hudRefreashInterval(1000), ACTIVE_PLAYER(0), backgroundTile(NULL)
@@ -24,44 +31,41 @@ bool Engine::init()
 	SDL_Init(SDL_INIT_VIDEO || SDL_INIT_TIMER);
 	
 	canvas = window.create();
-	
 	map.load();
 	camera.resize(window.getBox());
+	if (map.isActive()) { camera.setBounds(map.getBox()); }
 	
-	if (map.isActive()) { camera.setMap(map.getBox()); }
-	
-	//Prevent 'players' vector from re-allocating when new players are added
+/*	Prevent 'players' vector from re-allocating when new players are added */
 	players.reserve(MAX_PLAYERS);
 	
-	//Add invisible spectator to move around, this may be removed soon
-		Player spectator;
-		//addPlayer(spectator);
-	//printf( "Spectator is at %d,%d\n", players[0].getBox().x ,players[0].getBox().y );
-	
-	//Provide a sense of how big the map is in relation to player speed.
-	printf	("It will take %.2f minutes for player to travel across the entire map\n\n",
-			(map.getBox().w / spectator.getMaxVelocity()) / 60.f );
-
+/*	Provide a sense of how big the map is in relation to player speed.	*/
+	//printf	("It will take %.2f minutes for player to travel across the entire map\n\n",
+	//			(map.getBox().w / spectator.getMaxVelocity()) / 60.f );
 	return true;
 }
 
-void Engine::pause(){
-		timer.pause();
-		isPaused = true;
-		printf("Game has been paused\n");
+void Engine::pause()
+{
+	timer.pause();
+	isPaused = true;
+	printf("Game has been paused.\n");
 }
-void Engine::resume(){
-		timer.resume();
-		isPaused = false;
-		printf("Game has been unpaused\n");
+
+void Engine::resume()
+{
+	timer.resume();
+	isPaused = false;
+	printf("Game has been unpaused.\n");
 }
-void Engine::pauseResume(){
+
+void Engine::pauseResume()
+{
 	if (isPaused){
 		resume(); isPaused = false; }
 	else{ pause(); isPaused = true; }
 }
 
-//###### Start of the Main Game Loop ########
+/*	 Start of the Main Game Loop 	*/
 void Engine::game_loop()
 {
 	timer.start();
@@ -69,6 +73,7 @@ void Engine::game_loop()
 	while ( quit == false )		//	&& menu == false		//engine.menu_loop()
 	{
 		Ticks::start();
+		//pollEvents();
 		while (SDL_PollEvent(&event))
 		{
 			switch (event.type){
@@ -79,9 +84,12 @@ void Engine::game_loop()
 					if (event.key.keysym.sym == SDLK_ESCAPE) pauseResume();
 					if (event.key.keysym.sym == SDLK_F11){ window.toggleFullscreen(); }
 					if (event.key.keysym.sym == SDLK_F2){ DEBUG++; if (DEBUG > 3) DEBUG = 0; }
-					if (event.key.keysym.sym == SDLK_F1){
-						if (ISOMETRIC){ ISOMETRIC = 0; setMenuBackground("grass");}
-						else { ISOMETRIC = 1; setMenuBackground("grass(old)");}
+					if (event.key.keysym.sym == SDLK_F1)
+					{
+						if ( backgroundTile == loadImage("grass") ){
+							setMenuBackground("grass(old)");
+						}
+						else { setMenuBackground("grass"); }
 					}
 					if (event.key.keysym.sym == SDLK_TAB){
 						if(ACTIVE_PLAYER < players.size() - 1){
@@ -104,16 +112,16 @@ void Engine::game_loop()
 					break;
 				case SDL_MOUSEBUTTONDOWN:
 					if (DEBUG)
-					//if mouseclick interfaces with GUI --> do this
-					//else translate to grid pos + send event to object
+				/*	If mouseclick interfaces with GUI --> execute element's onClick() function.	*/
+				/*	Else translate to grid pos + send event to object.	*/
 						printf("Mouseclick: (%d, %d)\n", event.motion.x, event.motion.y);
 					break;
 				case SDL_WINDOWEVENT:
-					if (event.window.event == SDL_WINDOWEVENT_RESIZED){
+					window.update(event.window);
+					if ( event.window.event == SDL_WINDOWEVENT_RESIZED ){
 						window.resize();
 						camera.resize(window.getBox());
 					}
-					window.update(event.window);
 					break;
 				default: break;
 			}
@@ -122,23 +130,26 @@ void Engine::game_loop()
 		renderClear();
 
 		update();
-	//	render();
-		
+	//	render();	
 /** ALL Rendering is done after this point **/	
-		if (backgroundTile){		
-			tileTexture2(backgroundTile, backgroundClip, map.getView(camera.getBox()));
+		
+		if (backgroundTile)
+		{	
+		/*	This is ugly.	*/		
+			tileTexture2( backgroundTile, backgroundClip, map.getView(camera.getBox()) );
 		//	tileMenuBackground();
 		}
-		showPlayers();
+		
+		drawPlayers();
 		
 		debug();
 
 		render();
-//		timer.update();
+		timer.update();
 		Ticks::capFPS( MAX_FPS );
 	}
 }
-//######## End Game Loop ########
+/* END of Main Game Loop	*/
 
 inline bool Engine::fileExists(std::string filename){
 	std::ifstream file(filename.c_str());
@@ -180,14 +191,6 @@ void Engine::drawRect(SDL_Rect rect)
 	SDL_RenderDrawRect( Engine::getCanvas(), &offset);
 }
 
-/** All loading or requesting of images goes through this function
- * 	TODO:Add support for fetching from server so if user deleted img or
- * 	the client needs an image for a certain mod, it will receive it.
- * 	Start new thread for getting image.
- * 
- * 	...
- **/
- 
 inline SDL_Texture* Engine::loadImage( std::string filename )
 {
 	if (imageVault[filename])
@@ -197,6 +200,11 @@ inline SDL_Texture* Engine::loadImage( std::string filename )
 
 SDL_Texture* Engine::loadNewImage( std::string filename )
 {
+	if (fileExists( filename )){
+		imageVault[filename] = IMG_LoadTexture(Engine::getCanvas(), filename.c_str());
+		return imageVault[filename];
+	}
+	
 	std::string newfilename = IMG_DIR + filename + PNG;
 
 	//if (!fileExists(newfilename);){ //request image from server --> put in IMG_DIR }
@@ -204,17 +212,17 @@ SDL_Texture* Engine::loadNewImage( std::string filename )
 		imageVault[filename] = IMG_LoadTexture(Engine::getCanvas(), newfilename.c_str());
 		return imageVault[filename];
 	}
-//	NOTE: Enforcing PNG format!!
-//	newfilename = IMG_DIR + filename + JPG;
-//	imagefile.open(newfilename.c_str());
-//	if (imagefile != NULL)
-//		return IMG_LoadTexture(canvas, newfilename.c_str());
+
+	newfilename = IMG_DIR + filename + JPG;
+	if (fileExists(newfilename)){
+		imageVault[filename] = IMG_LoadTexture(Engine::getCanvas(), newfilename.c_str());
+		return imageVault[filename];
+	}
 	
 	printf("Warning:: Failed to Load Image: '%s' in directory: %s\n", filename.c_str(), IMG_DIR);
-	printf("	  Please make sure it has a '%s' extension.\n", PNG);
 	printf("	  Attempting to use default texture instead...\n\n");
 	
-	newfilename = IMG_DIR + static_cast<std::string>("default") + PNG;
+	newfilename = IMG_DIR + static_cast<std::string>("default");
 	imageVault[filename] = IMG_LoadTexture(Engine::getCanvas(), newfilename.c_str());
 	return imageVault[filename];
 }
@@ -299,39 +307,30 @@ inline bool collides( SDL_Rect rect1, SDL_Rect rect2 ){
  * 	wouldn't need to know much.
 **/
 template <typename Object>		//does this need to be a template if all clases are based on Object?(polymorphism)
-void show( Object &object, SDL_Rect offset)
+inline void draw( Object &object, SDL_Rect offset)
 {
 	SDL_Rect objectBox = object.getBox();
-//	Make object shown using an offset from camera to get the coordinates of
-//	where they are on the screen.
+/*	Camera position - Object position = Screen position	*/
 	objectBox.x -= offset.x;
 	objectBox.y -= offset.y;
-	object.animate();
+
+/*	Flip the Y-axis to be more side-scroller friendly
+ * 	Should there be a scenes or something that determine the local orientation.
+ **/
+	//objectBox.y -= offset.h;
+	//objectBox.y = objectBox.y * -1 - objectBox.h;
+	
+//	printf("Player's Y position %d\n",objectBox.y);
 	switch (object.objectType)
 	{
 		case CHARACTER:
 		{
-			//if ( object.isDead() ){
-			//	Ghost Mode:
-			//	SDL_SetTextureBlendMode(Engine::loadImage(object.name), SDL_BLENDMODE_ADD);		//increases brightness
-			//	SDL_SetTextureAlphaMod(Engine::loadImage(object.name), 128); 					//50% transparent
-			//}
-//			printf("Loading Image: %s\n",object.name.c_str());
-//			printf("First Box: %d,%d %d x %d\n",&object.getImage().x,&object.getImage().y,&object.getImage().w,&object.getImage().h);
-//			printf("Second Box: %d,%d %d x %d\n",objectBox.x,objectBox.y,objectBox.w,objectBox.h);
+			//SDL_SetTextureAlphaMod(Engine::loadImage(object.name), 128); 					//50% transparent
+			//SDL_SetTextureBlendMode(Engine::loadImage(object.name), SDL_BLENDMODE_ADD);		//increases brightness
 			SDL_RenderCopy( Engine::getCanvas(), Engine::loadImage(object.name),
 							&object.getImage(), &objectBox );	//	clip of image, clip on screen
 			break;
 		}
-/**		case ITEM:
- 			SDL_RenderCopy(Engine::getCanvas(), Engine::loadImage(ITEM_SHEET),
- 			 				object.getImage(), &objectBox );
- 			break;
-		case BLOCK:
-			SDL_RenderCopy( Engine::getCanvas(), Engine::loadImage(BLOCK_SHEET),
-			 				object.getImage(), &objectBox );
-			break;
-**/
 		default: break;
 	}
 }
@@ -343,14 +342,13 @@ void Engine::update()
  * 	TODO: Need ID/username system for players.
  * 			Need to modify for ability to sort and store objects too.
  * 	
- * 	Note: STL containers(vector,list...) cannot store pointers or references.
- * 
+ * 	Note: STL containers(vector,list...) cannot store pointers or references. 
 **/
 	renderPlayers.clear();
 	
-	players[ACTIVE_PLAYER].update();
 	camera.update();
-	for( Uint i = 0; i< players.size(); i++){
+	for( Uint i = 0; i< players.size(); i++)
+	{
 		if (i != ACTIVE_PLAYER)
 			players[i].update();
 		if( collides(camera, players[i]) ){
@@ -360,7 +358,7 @@ void Engine::update()
 	renderPlayers.sort();
 }
 
-void Engine::showPlayers()
+void Engine::drawPlayers()
 {
 /**	This function cycles through all players that are stored in the
  * 	renderPlayers.
@@ -368,19 +366,11 @@ void Engine::showPlayers()
 	for( auto playerIndex: renderPlayers ){
 			if (DEBUG)
 				drawRect( players[playerIndex.ID()].getBox() );
-			show(players[playerIndex.ID()], camera.getBox());
+			draw(players[playerIndex.ID()], camera.getBox());
 		}
 }
 
-void Engine::handleInput(SDL_KeyboardEvent& keyevent) //currently not used anymore
-{
-//	if keysym matches player controls
-//	if inventory ----> do something
-	players[ACTIVE_PLAYER].move(keyevent);
-//	else pass to engine(e.g. show menu, pause/resume game, navigate menu, show text console, talk)
-}
-
-inline void Engine::keepInBounds(SDL_Rect& box, SDL_Rect& Bounds){
+void Engine::keepInBounds(SDL_Rect& box, SDL_Rect& Bounds){
 	if (box.x < Bounds.x){ box.x = Bounds.x; }
 	else if (box.x + box.w > Bounds.x + Bounds.w){ box.x = Bounds.x + Bounds.w - box.w; }
 	if (box.y < Bounds.y){ box.y = Bounds.y; }
@@ -393,28 +383,38 @@ void Engine::tileTexture( SDL_Texture* source, SDL_Rect& clip, SDL_Rect bounds)
 	int totalColumns = bounds.w / clip.w + 1;
 	int totalRows = bounds.h / clip.h + 1;
 	
-	for (int rowIndex = 0; rowIndex < totalRows; rowIndex++){
-		for (int columnIndex = 0; columnIndex < totalColumns; columnIndex++){
+	for (int rowIndex = 0; rowIndex < totalRows; rowIndex++)
+	{
+		for (int columnIndex = 0; columnIndex < totalColumns; columnIndex++)
+		{
 			clip.x = columnIndex*clip.w - bounds.w/2;
 			clip.y = rowIndex*clip.h - bounds.h/2;
 			if (collides(clip,camera.getBox())){
 				clip.x -= camera.getBox().x;
 				clip.y -= camera.getBox().y;
-				applyTexture( source, clip );
+	/* Why */	applyTexture( source, clip );
 			}
 		}
 	}
 }
-//This is currently used to tile a texture whose bounds is based on the camera.
-//There for
+
+/*	This is currently used to tile a texture whose bounds is based on the camera.
+ * 	Tile a floor, then render it with respect to the camera.
+ * 	Ok...There shouldn't be specialized functions that render things slightly 
+ * 	differently?? Or is this an exception....Or make Camera a scene?, and and....IDK 
+ * 	OR THIS: Map is a scene, which automatically offsets what it renders based
+ * 	on the Camera....So scenes handle their own rendering...
+ */ 
 void Engine::tileTexture2( SDL_Texture* source, SDL_Rect& clip, SDL_Rect bounds )
 {
 	// !(bounds.h % clip.h) ? bounds.h / clip.h : bounds.h / clip.h + 1;
 	int totalColumns = bounds.w / clip.w + 1;
 	int totalRows = bounds.h / clip.h + 1;
 	
-	for (int rowIndex = 0; rowIndex < totalRows; rowIndex++){
-		for (int columnIndex = 0; columnIndex < totalColumns; columnIndex++){
+	for (int rowIndex = 0; rowIndex < totalRows; rowIndex++)
+	{
+		for (int columnIndex = 0; columnIndex < totalColumns; columnIndex++)
+		{
 			clip.x = columnIndex*clip.w + (bounds.x - camera.getBox().x);
 			clip.y = rowIndex*clip.h + (bounds.y - camera.getBox().y);
 			applyTexture( source, clip );
@@ -425,23 +425,12 @@ void Engine::tileTexture2( SDL_Texture* source, SDL_Rect& clip, SDL_Rect bounds 
 inline void Engine::render(){ SDL_RenderPresent(Engine::getCanvas()); }
 inline void Engine::renderClear(){ SDL_RenderClear(Engine::getCanvas()); }
                                                                                        
-void Engine::showSplash(){}
-void Engine::closeSplash(){}
-
 inline void Engine::setMenuBackground( std::string filename ){
 	backgroundTile = loadNewImage(filename);
 	backgroundClip = setClip(backgroundTile);
 }
 
-//void Engine::tileMenuBackground(){ tileTexture(backgroundTile, backgroundClip); }
 inline void Engine::tileMenuBackground(){ tileTexture(backgroundTile, backgroundClip); }
-
-//SDL_Texture* Engine::loadMap(std::string filename){}
-void Engine::loadLevel(){}
-
-//getters
-const SDL_Event& Engine::getEvent(){ return event; }
-SDL_Renderer* Engine::getCanvas(){ return canvas; }
 
 void Engine::debug()
 {
