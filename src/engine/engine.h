@@ -95,14 +95,12 @@ class Engine
 		static SDL_Rect setClip( SDL_Texture* source );
 
 		void drawRect(SDL_Rect rect);
-
 	/*	These two functions will be wrappers for the rendering?.	*/
 		static void applyTexture( SDL_Texture* source, SDL_Rect& clip );
 		static void applyTexture( SDL_Texture* source, SDL_Rect& sourceclip, SDL_Rect& clip );
 		
 		static void keepInBounds(SDL_Rect& box, SDL_Rect& Bounds);
 			
-		void addPlayer(std::string type);
 		void addPlayer(Player &player);
 		void drawPlayers();
 		void handleInput(SDL_KeyboardEvent& keyevent);

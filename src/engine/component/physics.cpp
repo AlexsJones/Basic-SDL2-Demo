@@ -2,19 +2,17 @@
 #include "component/physics.h"
 #include "macro.h"
 
-Component::Physics::Physics(SDL_Rect box)
+Component::Physics::Physics()
 	:velocity(140.f), timeref(SDL_GetTicks())
 {
 	vel.x = vel.y = 0.f;
 	acc.x = acc.y = 0;
 	timestep=(1000.f/velocity);
 	//timestep=(1000.f/33);
-	accstep = velocity*((timestep * 4.f)/1000.f);//LOL ~4	//4 is meant to be an amount of pixels or something
+	accstep = velocity*((timestep * 4.f)/1000.f);//LOL ~4	//4 is meant to be an amount of pixels per step
 	deaccstep = accstep * 4.f;
 //	animation.setSpeed(2000/(velocity/5));
 	
-	pos.x = box.x;
-	pos.y = box.x;
 	//NEEDS a way to set spawn(passed in when PhysicsComponent is created)
 //	pos.x = -(box.w / 2.0);
 //	pos.y = -(box.h / 2.0);
@@ -28,6 +26,10 @@ void Component::Physics::update(Uint8& ACTION, SDL_Rect& box)
 //	update the acceleration and keep with bounds
 //	update the velocity using the new acc. and deltaTime
 //	add the velocity to the position, and return its value(float).
+	if (box.x != (int )pos.x)
+		pos.x = box.x;
+	if (box.y != (int )pos.y)
+		pos.y = box.y;
 while (Timer::updateInterval(timestep, timeref)){	
 	if ( (!hasFlag(ACTION, LEFT) && !hasFlag(ACTION, RIGHT)) || hasFlag(ACTION, (LEFT + RIGHT)) ){
 			if (acc.x > 0){

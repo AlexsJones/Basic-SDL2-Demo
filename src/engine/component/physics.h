@@ -27,7 +27,7 @@ class Physics : public Component::iComponent
 		float timestep;
 		
 	public:
-		Physics(SDL_Rect box);
+		Physics();
 		inline float Velocity(){ return velocity; }
 		void update();
 		void update(Uint8& ACTION, SDL_Rect& box);

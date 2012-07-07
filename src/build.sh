@@ -1,6 +1,6 @@
 ##	Plane of Craftiness
 ##
-##NOTE: This file may eventually be depreciated.
+##	NOTE: This file may eventually be depreciated.
 ##		This script is slower than running 'make' because it re-builds the entire project.
 ##		The Makefile fails to set the DATE, but isn't necessarily needed.
 
@@ -23,6 +23,22 @@ Help ()
 BUILD_STATIC=0
 NO_CLEANUP=0
 
+ARGS=$#
+SHIFT_COUNT=0
+if test $ARGS -gt 0
+then
+while (test $SHIFT_COUNT -le $ARGS)
+do
+	case  $1  in
+			"static")		BUILD_STATIC=1;;
+			"no-cleanup")	NO_CLEANUP=1;;
+			"help")			Help;;
+	esac
+	shift
+	SHIFT_COUNT=`expr $SHIFT_COUNT + 1`
+done
+fi
+
 Build ()
 {
 if test $BUILD_STATIC -eq 0
@@ -40,33 +56,21 @@ if test $BUILD_STATIC -eq 0
 		engine/component/physics.cpp	\
 	-DDATE='"'$DATE'"' -o ../poc -Iinclude -Iengine -L../lib -lSDL2 -lSDL2_image
 else
-	echo "--> Generating Static Executable"
-	g++ engine/*.o engine/component/*.o							\
-	-Llib -Wl,-Bstatic lib/libSDL2.a lib/libSDL2_image.a		\
-	lib/libSDL2main.a -lsmpeg -lmikmod -lvorbisfile -lvorbis	\
-	-logg -lXxf86dga -lXxf86vm -lXv -lXinerama -lXi -lpng -lz	\
-	-lstdc++ -Wl,-Bdynamic -lpthread -lGL -lX11 -lXext -ldl		\
-	-lgcc -lGL -lGLU -lpthread -lGLEW							\
-	-o ../"poc_static-"$DATE
-
+	ls lib/libSDL2*.a							##	Check for library archives 
+	if test $? -eq 0							##	If the command didn't produce any errors
+		then									##	Then build the executable
+		echo "--> Generating Static Executable"
+		g++ engine/*.o engine/component/*.o							\
+		-Llib -Wl,-Bstatic lib/libSDL2.a lib/libSDL2_image.a		\
+		lib/libSDL2main.a -lsmpeg -lmikmod -lvorbisfile -lvorbis	\
+		-logg -lXxf86dga -lXxf86vm -lXv -lXinerama -lXi -lpng -lz	\
+		-lstdc++ -Wl,-Bdynamic -lpthread -lGL -lX11 -lXext -ldl		\
+		-lgcc -lGL -lGLU -lpthread -lGLEW							\
+		-o ../"poc_static-"$DATE
+	else echo "Please copy all the '.a' files from the 'lib' directory of SDL2 to the 'lib' directory in this folder."
+	fi
 fi
 }
-
-ARGS=$#
-SHIFT_COUNT=0
-if test $ARGS -gt 1
-then
-while (test $SHIFT_COUNT -le $ARGS)
-do
-	case  $1  in
-			"static")		BUILD_STATIC=1;;
-			"no-cleanup")	NO_CLEANUP=1;;
-			"help")			Help;;
-	esac
-	shift
-	SHIFT_COUNT=`expr $SHIFT_COUNT + 1`
-done
-fi
 
 ##	These statements should be switched a little if we completely switch to make.
 if test $BUILD_STATIC -eq 0

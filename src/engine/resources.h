@@ -18,8 +18,8 @@
 template<typename T>
 map<std::string, T> components;
 
-namespace Resources{
-	
+namespace Resources
+{
 inline SDL_Texture* loadImage( std::string filename )
 {
 	if (imageVault[filename])
@@ -29,29 +29,10 @@ inline SDL_Texture* loadImage( std::string filename )
 
 SDL_Texture* loadNewImage( std::string filename )
 {
-	std::string newfilename = IMG_DIR + filename + PNG;
-
-	//if (!fileExists(newfilename);){ //request image from server --> put in IMG_DIR }
-	if (fileExists(newfilename)){
-		imageVault[filename] = IMG_LoadTexture(Engine::getCanvas(), newfilename.c_str());
-		return imageVault[filename];
-	}
-	
-	newfilename = IMG_DIR + filename + JPG;
-	imagefile.open(newfilename.c_str());
-	if (imagefile != NULL)
-		return IMG_LoadTexture(canvas, newfilename.c_str());
-	
-	printf("Warning:: Failed to Load Image: '%s' in directory: %s\n", filename.c_str(), IMG_DIR);
-	printf("	  Please make sure it has a '%s' extension.\n", PNG);
-	printf("	  Attempting to use default texture instead...\n\n");
-	
-	newfilename = IMG_DIR + static_cast<std::string>("default") + PNG;
-	imageVault[filename] = IMG_LoadTexture(Engine::getCanvas(), newfilename.c_str());
-	return imageVault[filename];
+	// Put the new one here from the engine.
 }
 	
 
-};
+};	/*	namespace Resources	*/
 
 #endif

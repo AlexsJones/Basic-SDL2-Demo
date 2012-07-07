@@ -185,10 +185,9 @@ SDL_Rect Engine::setClip ( SDL_Texture* source )
 
 void Engine::drawRect(SDL_Rect rect)
 {
-	SDL_Rect offset = rect;
-	offset.x -= camera.getBox().x;
-	offset.y -= camera.getBox().y;
-	SDL_RenderDrawRect( Engine::getCanvas(), &offset);
+	rect.x -= camera.getBox().x;
+	rect.y -= camera.getBox().y;
+	SDL_RenderDrawRect( Engine::getCanvas(), &rect);
 }
 
 inline SDL_Texture* Engine::loadImage( std::string filename )
@@ -242,6 +241,8 @@ inline SDL_Rect Engine::getImageClip(Uint8 id){//for blocks and items
 //apply the entire texture onto an area of the canvas
 inline void Engine::applyTexture( SDL_Texture* source, SDL_Rect& clip ){
 	SDL_RenderCopy( Engine::getCanvas(), source, NULL, &clip );
+	//SDL_RenderCopyEx()	//Sweet, the rotation API has made it into SDL1.3 =]
+
 }
 
 inline void Engine::applyTexture( SDL_Texture* source, SDL_Rect& sourceclip, SDL_Rect& clip ){
@@ -266,7 +267,7 @@ void Engine::tileTexture( SDL_Texture* source, SDL_Rect& clip)
 	}
 }
 
-void Engine::addPlayer(std::string type )
+void Engine::addPlayer(Player &player)
 {
 	if (map.isActive()){
 		if (players.size() >= MAX_PLAYERS){
@@ -274,22 +275,10 @@ void Engine::addPlayer(std::string type )
 			printf("	  Maximum amount of Players allowed is %d.\n\n", MAX_PLAYERS);
 			return;
 		}
-		//hard-coded player size, maybe will be used as default? 		//not here though
-		if (type != "pog"){
-			Player playerX( type, 40, 60 );
-			addPlayer(playerX);
-		} else{
-			Pog playerX;
-			addPlayer(playerX);
-		}
-	}
-}
-
-void Engine::addPlayer(Player &player)
-{
 	player.ID( players.size() );
 	players.push_back( player );
 	camera.follow(&players[ACTIVE_PLAYER]);
+	}
 }
 
 template <typename Object1, typename Object2>
@@ -327,6 +316,7 @@ inline void draw( Object &object, SDL_Rect offset)
 		{
 			//SDL_SetTextureAlphaMod(Engine::loadImage(object.name), 128); 					//50% transparent
 			//SDL_SetTextureBlendMode(Engine::loadImage(object.name), SDL_BLENDMODE_ADD);		//increases brightness
+			/*Make this apply_texture whenever I can*/
 			SDL_RenderCopy( Engine::getCanvas(), Engine::loadImage(object.name),
 							&object.getImage(), &objectBox );	//	clip of image, clip on screen
 			break;
@@ -405,6 +395,7 @@ void Engine::tileTexture( SDL_Texture* source, SDL_Rect& clip, SDL_Rect bounds)
  * 	OR THIS: Map is a scene, which automatically offsets what it renders based
  * 	on the Camera....So scenes handle their own rendering...
  */ 
+ #include "SDL2/SDL_render.h"
 void Engine::tileTexture2( SDL_Texture* source, SDL_Rect& clip, SDL_Rect bounds )
 {
 	// !(bounds.h % clip.h) ? bounds.h / clip.h : bounds.h / clip.h + 1;
@@ -415,7 +406,7 @@ void Engine::tileTexture2( SDL_Texture* source, SDL_Rect& clip, SDL_Rect bounds 
 	{
 		for (int columnIndex = 0; columnIndex < totalColumns; columnIndex++)
 		{
-			clip.x = columnIndex*clip.w + (bounds.x - camera.getBox().x);
+			clip.x = columnIndex*(clip.w + (bounds.x - camera.getBox().x);
 			clip.y = rowIndex*clip.h + (bounds.y - camera.getBox().y);
 			applyTexture( source, clip );
 		}

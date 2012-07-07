@@ -2,12 +2,12 @@
 #include "player.h"
 
 Player::Player()
-	:Character()
+	//:Character()
 {
 }
 
 Player::Player( std::string filename, int width, int height ) //this width + height  determines size of frames.
-	:Character()
+	//:Character()
 {
 	Player();
 	name = filename;
@@ -23,39 +23,3 @@ Player::Player( std::string filename, int width, int height ) //this width + hei
 	box.w = width;
 	box.h = height;
 }
-
-
-///////////////////////////
-///		Random Tests	///
-///////////////////////////
-class Foo
-{
-	private:
-		int nBar;
-		std::vector<int> vBar;
-	public:
-		Foo(const std::initializer_list<int>& nAssign) //:ntest(pie)
-		{
-			auto x = nAssign.begin();
-			nBar = *x;
-		}	
-};
-Foo foo( {5,7,3,8,3,2,7} );
-
-class Player2
-{
-	public:
-		std::string name;
-		std::string image;
-		SDL_Point size;
-		int speed;
-	public:
-		//Player2(const std::initializer_list<int>& nAssign) //:ntest(pie)
-		Player2(std::string name_, ...);
-		
-};
-
-//Player2 teeest { "pirate", "pirate", {40,60}, 140 };
-//Player2 teeest2{ "pirate", teeest2.image = "pirate", {40,60}, 140 } ;
-//Foo fool( {nBar=5} );
-

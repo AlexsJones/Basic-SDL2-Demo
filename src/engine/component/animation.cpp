@@ -46,12 +46,12 @@ void Component::Animation::update(Uint8& ACTION)
  */
 void Component::Animation::add( std::string id, std::string imagefile, SDL_Rect* image, SDL_Rect frame, int frames, int defaultFrame )
 {
-/*	Get box for the image.If not supplied already.	*/
+/*	Get box for the image. If not supplied already.	*/
 	if ( !image ){
-	SDL_Rect* imageBox = new SDL_Rect;
-	*imageBox = Engine::getImageSheetDimensions(imagefile);
-	imageBox->x = imageBox->y = 0;
-	image = imageBox;
+		SDL_Rect imageBox;
+		imageBox = Engine::getImageSheetDimensions(imagefile);
+		imageBox.x = imageBox.y = 0;
+		image = &imageBox;
 	}
 
 /*	Caluculate the amount of frames that can fit in the space of the image. */
@@ -112,7 +112,7 @@ void Component::Animation::set( std::string animationID )
 {
 	for ( auto index: animations)
 	{	/*	check if animationID matches any animations[i].id()	*/
-		if ( index.ID().c_str() == animationID.c_str() )
+		if ( index.ID() == animationID )
 		{
 			/*	How do I convert the Animation match to number.
 			 * 

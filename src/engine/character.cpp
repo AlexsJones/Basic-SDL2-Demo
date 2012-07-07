@@ -3,9 +3,8 @@
 #include "macro.h"
 
 #include "SDL2/SDL_keycode.h"
-
 Character::Character()
-	 :Object(CHARACTER), ACTION(0), physics(box)
+	 :Object(CHARACTER), ACTION(0), physics()
 {
 	Actions ={ {"left",0}, {"right",0}, {"up",0}, {"down",0},
 			   {"attack",0}, {"attack2",0}, {"jump",0}, {"dead",0} };
@@ -26,7 +25,7 @@ void Character::TestActions()
 
 //Character(const InputComponent& input)
 Character::Character( Component::Input* input )
-	:Object(CHARACTER), ACTION(0), physics(box)
+	:Object(CHARACTER), ACTION(0), physics()
 {
 	Character();
 	this->input = input;

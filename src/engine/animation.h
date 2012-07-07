@@ -22,55 +22,54 @@ typedef unsigned int Uint;
 /**	Sprites has a source image and a sequence of frames. It stores how many frames
  * 	it has. Animation has one sprite. It stores the position, animation speed, etc
  * 	in order to animate the sprite.
- * 
 **/
 class Sprite	//Currently un-used
 {
-	private:
-//		std::string id;
-		SDL_Rect image;
-		std::vector<SDL_Rect> sprites;
-//		int frames;
-	public:
+private:
+	std::string ID;	//Not the images ID, but an animation id?  walk_right
+//	SDL_Rect image;
+	Image image;	//Size and position of square inside the actual image represented by the ID
+	std::vector<Image> frames;
+public:
 };
 
 //  sAnimation was changed because there was a naming conflict within
-//  Component::Animation. Once there is a game namespace or something, it
+//  Component::Animation. Once there is a gamespace or something, it
 //	will be reverted or changed to something better.
 class sAnimation
 {
-	protected:
-		std::string id;
-	
-		bool locked;
-		std::vector<SDL_Rect> frames;	//sequence of frames
-		int speed;
-		
-		Uint currentFrame;
-		Uint defaultFrame;
-		
-		Uint timeref;
-		bool reverseAnimate;
-//		bool loop;						//Does the animation loop, or just play and start from begining
-		
-	public:
-		sAnimation();
-		sAnimation(std::string imagefile, int w, int h);
-		inline void ID(std::string id){ this->id = id; }
-		inline std::string ID(){ return id; }
-//		void create( std::string id, std::string imagefile, SDL_Rect* image, SDL_Rect frame, int frames, int defaultFrame );
-		void add(SDL_Rect frame);
-		
-		void animate();
+protected:
+	std::string id;
 
-		void setSpeed(int speed);
-		void setDefault(Uint nFrame);
-		void setToDefault();
-		
-		inline const SDL_Rect& get(){ return get(currentFrame); }
-		const SDL_Rect& get(Uint nFrame);
-		const SDL_Rect& operator()(Uint nFrame);
-		inline const SDL_Rect& operator()(){ return get(currentFrame); }
+	bool locked;
+	std::vector<SDL_Rect> frames;	//sequence of frames
+	int speed;
+	
+	Uint currentFrame;
+	Uint defaultFrame;
+	
+	Uint timeref;
+	bool reverseAnimate;
+//		bool loop;						//Does the animation loop, or just play and start from begining
+	
+public:
+	sAnimation();
+	sAnimation(std::string imagefile, int w, int h);
+	inline void ID(std::string id){ this->id = id; }
+	inline std::string ID(){ return id; }
+//		void create( std::string id, std::string imagefile, SDL_Rect* image, SDL_Rect frame, int frames, int defaultFrame );
+	void add(SDL_Rect frame);
+	
+	void animate();
+
+	void setSpeed(int speed);
+	void setDefault(Uint nFrame);
+	void setToDefault();
+	
+	inline const SDL_Rect& get(){ return get(currentFrame); }
+	const SDL_Rect& get(Uint nFrame);
+	const SDL_Rect& operator()(Uint nFrame);
+	inline const SDL_Rect& operator()(){ return get(currentFrame); }
 };
 
 #endif

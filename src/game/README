@@ -14,7 +14,7 @@
 This folder will contain the files that describe, define, setup the game and
 its content.
 
-It would be nice to have some of these files written in the Lua scripting language.
+It would be nice to have some of these files written in a scripting language.
 This would allow quicker development, because the scrpits could be loaded on demand
 without re-compiling everything.
 
@@ -36,7 +36,7 @@ class Pirate : public Player
 	void update()
 	{
 		//do something awesome
-		//then call player's update function
+		//then call player's update function?
 		Player::update();
 	}
 };

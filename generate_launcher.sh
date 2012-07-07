@@ -29,6 +29,11 @@ if [ $OS == "Linux" || "Darwin" ]
 	Terminal=false 						> $FileName.$FileType
 
 	chmod +x $FileName.$FileType
+	if [ -x "$FileName.$FileType" ]
+		then
+		echo "Error, failed to set the file to be executable."
+		echo "You can do this manually by typing 'chmod +x $FileName.$FileType' or enabling it in the properties of the file."
+	fi
 	cp $FileName.$FileType ~/.local/share/applications
 
 else 
