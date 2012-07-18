@@ -54,7 +54,7 @@ void Component::Animation::add( std::string id, std::string imagefile, SDL_Rect*
 		image = &imageBox;
 	}
 
-/*	Caluculate the amount of frames that can fit in the space of the image. */
+/*	Calculate the amount of frames that can fit in the space of the image. */
 	int framesWide = ( image->w - frame.x ) / frame.w;
 	int framesHigh = ( image->h - frame.y ) / frame.h;
 
@@ -62,12 +62,12 @@ void Component::Animation::add( std::string id, std::string imagefile, SDL_Rect*
 		printf("Not enough space inside %s image to create %s animation\n",imagefile.c_str(), id.c_str());
 
 /*	Get the absolute coordinates of the start frame.	*/
-/*	This allows the frame to be relative of the image box.	*/
-	int startX = frame.x;
-	
+/*	This allows the frame to be relative of the image box.	*/	
 	frame.x += image->x;
 	frame.y += image->y;
-	
+	int startX = frame.x;
+
+
 //	Animation* newAnimation = new Animation;
 	sAnimation newAnimation;
 	newAnimation.ID(id);
@@ -82,6 +82,10 @@ void Component::Animation::add( std::string id, std::string imagefile, SDL_Rect*
 /*		If the current frame doesn't fit on the image (x-axis).
  * 		Go to the next line and reset the X cooridinate.	*/
  		if ( (frame.x + (currentFrame * frame.w)) > (image->x + image->w) ){
+		/*	Lets not allow one animation to span multiple lines. This method
+		 * 	of allocating a sprite will definitely be changed, possibly by
+		 * 	using a SpriteStructure.	*/
+			break;
 			frame.y += frame.h;	rowIndex++;
 			frame.x = startX;	columnIndex = 0;
 			if ( (frame.y + frame.h) > (image->y + image->h) ){

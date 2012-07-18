@@ -23,13 +23,14 @@ void Component::Physics::update()
 
 void Component::Physics::update(Uint8& ACTION, SDL_Rect& box)
 {
-//	update the acceleration and keep with bounds
+//	update the acceleration and keep within bounds
 //	update the velocity using the new acc. and deltaTime
 //	add the velocity to the position, and return its value(float).
 	if (box.x != (int )pos.x)
 		pos.x = box.x;
 	if (box.y != (int )pos.y)
 		pos.y = box.y;
+		
 while (Timer::updateInterval(timestep, timeref)){	
 	if ( (!hasFlag(ACTION, LEFT) && !hasFlag(ACTION, RIGHT)) || hasFlag(ACTION, (LEFT + RIGHT)) ){
 			if (acc.x > 0){

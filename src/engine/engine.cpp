@@ -16,9 +16,9 @@
 	Window Engine::window;
 	SDL_Renderer* Engine::canvas;
 	std::map<std::string, SDL_Texture*> Engine::imageVault;
-	Uint Ticks::startTicks;
-	Uint Ticks::deltaTicks;
-	Uint Ticks::fps;
+//	Uint Ticks::startTicks;
+//	Uint Ticks::deltaTicks;
+//	Uint Ticks::fps;
 	Uint Engine::DEBUG(0);
 
 Engine::Engine()
@@ -72,7 +72,7 @@ void Engine::game_loop()
 //	gameStarted = true;
 	while ( quit == false )		//	&& menu == false		//engine.menu_loop()
 	{
-		Ticks::start();
+		hrTicks.start();
 		//pollEvents();
 		while (SDL_PollEvent(&event))
 		{
@@ -146,7 +146,7 @@ void Engine::game_loop()
 
 		render();
 		timer.update();
-		Ticks::capFPS( MAX_FPS );
+		hrTicks.capFPS( MAX_FPS );
 	}
 }
 /* END of Main Game Loop	*/
@@ -406,7 +406,7 @@ void Engine::tileTexture2( SDL_Texture* source, SDL_Rect& clip, SDL_Rect bounds 
 	{
 		for (int columnIndex = 0; columnIndex < totalColumns; columnIndex++)
 		{
-			clip.x = columnIndex*(clip.w + (bounds.x - camera.getBox().x);
+			clip.x = columnIndex*clip.w + (bounds.x - camera.getBox().x);
 			clip.y = rowIndex*clip.h + (bounds.y - camera.getBox().y);
 			applyTexture( source, clip );
 		}
@@ -430,7 +430,7 @@ void Engine::debug()
 		drawRect( map.getBox() );
 		if ( !isPaused && DEBUG && Timer::updateInterval(hudRefreashInterval, hudRefreashRefTime )){
 			printf("Time: %d  ", timer.getGameTime() / 1000);
-			printf("@  %d fps\n",Ticks::getFPS());
+			printf("@  %d fps\n",hrTicks.getFPS());
 			if (DEBUG == 2){
 				printf("camera: %d %d\n", camera.getBox().x, camera.getBox().y);
 				printf("map: %d %d\n", map.getBox().x, map.getBox().y);

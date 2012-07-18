@@ -15,7 +15,7 @@ Player::Player( std::string filename, int width, int height ) //this width + hei
 //	animation.add( name, width, height );
 	SDL_Rect frame = {0,0,width,height};
 	animation.add( "left", filename, NULL, frame, 6, 3	);
-	frame.y += height;
+	frame.y += frame.h;
 	animation.add( "right", filename, NULL, frame, 6, 3 );
 /*	Set default frames to 2 for pirate	*/
 //	animation.setDefaultFrame(1,3);

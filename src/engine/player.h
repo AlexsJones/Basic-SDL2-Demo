@@ -42,17 +42,17 @@ class Player : public Character
 	friend class Engine;
 	private:
 		Uint id;
-		PlayerType type;
+//		PlayerType type;
 		inline void ID(Uint ID){ id = ID; }
 				
 	public:
 		Player();
 		Player( std::string filename, int width, int height );
 
-		inline void setType( const PlayerType& type ){ this->type = type; }
-		
 		inline Uint ID(){ return id; }
-		inline const PlayerType& getType(){ return type; }
+		
+//		inline void setType( const PlayerType& type ){ this->type = type; }
+//		inline const PlayerType& getType(){ return type; }	
 };
 
 ///////////////////////////
@@ -84,21 +84,23 @@ class Pog : public Player
 			box.h = 51;
 			SDL_Rect frame = {0,0,47,51};
 			animation.add( "left", "pog", NULL, frame, 1 );
-			//Should there be a function to assign all frames from one image
-			//to multiple Animations, or even one Animation (with modification).
-			frame.y += box.h;
+/*	Should there be a function to assign all frames from one image
+ *	to multiple Animations, or even one Animation (with modification).
+ * 	There should be a 2d array that specifies a sprite structure.
+ */
+			frame.y += frame.h;
 			animation.add( "right", "pog", NULL, frame, 1 );
-			frame.y += box.h;
+			frame.y += frame.h;
 			animation.add( "up", "pog", NULL, frame, 1 );
-			frame.y += box.h;
+			frame.y += frame.h;
 			animation.add( "down", "pog", NULL, frame, 1 );
-			frame.y += box.h;
+			frame.y += frame.h;
 			animation.add( "up-left", "pog", NULL, frame, 1 );
-			frame.y += box.h;
+			frame.y += frame.h;
 			animation.add( "up-right", "pog", NULL, frame, 1 );
-			frame.y += box.h;
+			frame.y += frame.h;
 			animation.add( "down-left", "pog", NULL, frame, 1 );
-			frame.y += box.h;
+			frame.y += frame.h;
 			animation.add( "down-right", "pog", NULL, frame, 1 );
 		}
 };

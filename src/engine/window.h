@@ -42,6 +42,8 @@ class Window
 		SDL_Rect box;
 		SDL_Window* window;
 		SDL_Renderer* canvas;
+	//	Engine* engine;
+	//	SDL_Thread thread;
 		SDL_DisplayMode displayMode;
 		SDL_Surface* windowicon;
 		int minWidth;

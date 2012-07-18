@@ -23,6 +23,10 @@ sAnimation::sAnimation()
 
 void sAnimation::add( SDL_Rect frame ){
 	frames.push_back( frame );
+	if ( defaultFrame==0 && frames.size() > 1 )
+	{
+		setDefault(1);
+	}
 }
 
 void sAnimation::animate()

@@ -8,8 +8,8 @@
 //#define MAPSIZE 1024		//change to 2^MAPSIZE?(Like Sauerbraten) MAPSIZE 8 == 256
 #define BLOCK_SIZE 32		//individual grid size in pixels (should match grass texture size)
 #define CHUNK_SIZE 20		//amount of blocks grouped together for loading/unloading
-#define MAP_WIDTH 10		//
-#define MAP_HEIGHT 10
+#define MAP_WIDTH 100
+#define MAP_HEIGHT 100
 
 #define TOTAL_CHUNKS ( (MAP_WIDTH/CHUNK_SIZE) * (MAP_WIDTH/CHUNK_SIZE) )
 
@@ -30,7 +30,7 @@ class Chunk
  * 	the border around water. For example, a beach is drawn differently
  * 	than a cliff-type pond. It may also be usefull for waterfalls.
  * 	The water block on the map overides this if it is greater.
-**/ 
+**/
 	public:
 		std::vector<Block> tiles;
 		int waterlevel;

@@ -93,50 +93,54 @@ class Timer
 		}
 };
 
-
 class Ticks
 {
-	friend class Engine;				//only engine can update and start this timer
-	private:
-		static Uint startTicks;			//loop start time
-		static Uint deltaTicks;			//time the loop took to go around
-		static Uint fps;
-		static void start(){ startTicks = SDL_GetTicks(); }
-		
-		inline static void update(){
-			deltaTicks = SDL_GetTicks() - startTicks;
-			if (!deltaTicks){
-				deltaTicks = 1;
-				SDL_Delay (1);
-			}
-			fps = 1000 / deltaTicks;
+friend class Engine;
+private:
+	Uint64 ticksPerSecond;
+	Uint64 startTicks;			//loop start time
+	Uint64 deltaTicks;			//time the loop took to go around
+	Uint32 fps;
+	void start(){ startTicks = SDL_GetPerformanceCounter(); }
+	
+	inline void update(){
+		deltaTicks = SDL_GetPerformanceCounter() - startTicks;
+		if (!deltaTicks){
+			deltaTicks = 1;
+			SDL_Delay(1);
 		}
-		
-		inline static void capFPS(const Uint& maxfps){
+		fps = ticksPerSecond / deltaTicks;
+	}
+	
+	inline void capFPS(Uint32 maxfps){
+		update();
+		//maxfps *= ( ticksPerSecond / 1000 );
+		//maxfps *= 1000;
+//		std::cout << "Max FPS: " << maxfps << ", Delta Ticks: " << deltaTicks << "\n";
+		if( ticksPerSecond / deltaTicks >= maxfps ){
+			SDL_Delay( ( ( ticksPerSecond / maxfps) - deltaTicks  ) / 1000 );
 			update();
-			if( 1000 / deltaTicks >= maxfps ){
-				SDL_Delay( ( 1000 / maxfps) - deltaTicks );
-				update();
-			}
-			//'double precision' FPS capping method ;)
-			//Once game gets bigger, this may be uneccessary
-			//I should be using a High Resolution Timer
-			if( 1000 / deltaTicks >= maxfps ){
-				SDL_Delay( ( 1000 / maxfps) - deltaTicks );
-				update();
-			}
 		}
-	public:
-		//Get the delta time
-		inline static const Uint getDeltaTicks(){
-			if (!deltaTicks)
-				deltaTicks = 1;
-			return deltaTicks; }
-		//Get the FPS of rendering and logic cycle
-		inline static const Uint getFPS(){
-			if(!fps) fps=1;
-			return fps;
+		if( ticksPerSecond / deltaTicks >= maxfps ){
+			SDL_Delay( ( ( ticksPerSecond / maxfps) - deltaTicks  ) / 1000 );
+			update();
 		}
+	}
+public:
+	Ticks() :ticksPerSecond(SDL_GetPerformanceFrequency()) {}
+	//Get the delta time
+	inline const Uint getDeltaTicks(){
+		if ( (deltaTicks)/1000 == 0 )
+			return 1;
+//		std::cout << "Delta::" << deltaTicks << "\n";
+		return (deltaTicks)/1000;
+		}
+	//Get the FPS of rendering and logic cycle
+	inline const Uint getFPS(){
+		if( !fps )
+			fps=1;
+		return fps;
+	}
 };
 
 

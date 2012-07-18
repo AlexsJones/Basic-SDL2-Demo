@@ -68,6 +68,7 @@ class Engine
 		static std::map<std::string, SDL_Texture*> imageVault;
 		
 		Timer timer;
+		Ticks hrTicks;
 		
 		SDL_Rect backgroundClip;
 		SDL_Texture* backgroundTile;

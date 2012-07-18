@@ -23,12 +23,13 @@ typedef unsigned int Uint;
  * 	it has. Animation has one sprite. It stores the position, animation speed, etc
  * 	in order to animate the sprite.
 **/
+class Image{};//dummy
 class Sprite	//Currently un-used
 {
 private:
-	std::string ID;	//Not the images ID, but an animation id?  walk_right
+	std::string id;	//Not the image id, but an animation id?  walk_right
 //	SDL_Rect image;
-	Image image;	//Size and position of square inside the actual image represented by the ID
+	Image image;	//Size and position of square inside the actual image represented by its ID
 	std::vector<Image> frames;
 public:
 };

@@ -59,7 +59,10 @@ class Character : public Object
 		
 //		virtual void setType( const CharacterType& type );
 
-		inline const SDL_Rect &getImage(){ return animation(); }
+		inline const SDL_Rect &getImage(){
+			return animation();
+		}
+		
 //		inline const SDL_Rect& getBox(){ return box; }
 		~Character(){}
 

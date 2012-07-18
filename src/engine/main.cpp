@@ -8,16 +8,6 @@
  *  I NEED to come up with a name for this *ENGINE*, give it a nice clean API,
  * 	and give it bindings for python.
 **/
-class MyRect
-{
-public:
-	int x,y;
-	int w,h;
-};
-void Test(SDL_Rect rect)
-{
-	printf("Yay it worked %d,%d  %d x %d.\n",rect.x,rect.y,rect.w,rect.h);
-}
 
 int main(int argc, char *args[])
 {
@@ -32,18 +22,28 @@ int main(int argc, char *args[])
 	//Game::Init(); //This would be used to inject content that the engine and menu can use.
 	engine.setMenuBackground( "grass" );		//put into a menu loop ---> and menu class
 //	engine.menu_loop();
+	
 	Pog pog;
-	Player pirate( "pirate", 40, 60 );
-	//Player monster( "monster", 40, 60 );
 	engine.addPlayer(pog);
+	
+	Pog largePog;
+	largePog.resize( 94, 102 );
+	engine.addPlayer(largePog);
+	
+	Player pirate( "pirate", 40, 60 );
 	engine.addPlayer(pirate);
-	//engine.addPlayer(monster);
+	
+	Player monster( "monster", 40, 60 );
+	monster.resize(80,120);
+	engine.addPlayer(monster);
+
 	
 	std::cout << timestamp() << "[Client] Created player types successfully.\n";
 	std::cout << timestamp() << "[Client] Entering main game loop.\n";
 	
 	engine.game_loop();		//----> menu_loop() + game_loop()
 	
+	//engine.quit();
 	SDL_Quit();
 	return 0;
 }
