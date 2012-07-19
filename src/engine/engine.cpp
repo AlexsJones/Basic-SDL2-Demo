@@ -22,7 +22,7 @@
 	Uint Engine::DEBUG(0);
 
 Engine::Engine()
-	: quit(false), isPaused(false), hudRefreashRefTime(0), hudRefreashInterval(1000), ACTIVE_PLAYER(0), backgroundTile(NULL)
+	: quit(false), isPaused(false), hudRefreashInterval(1000), ACTIVE_PLAYER(0), backgroundTile(NULL)
 {
 }
 
@@ -428,8 +428,8 @@ void Engine::debug()
 	if (DEBUG){
 		drawRect( camera.getBox() );
 		drawRect( map.getBox() );
-		if ( !isPaused && DEBUG && Timer::updateInterval(hudRefreashInterval, hudRefreashRefTime )){
-			printf("Time: %d  ", timer.getGameTime() / 1000);
+		if ( !isPaused && DEBUG && hudRefreashInterval() ){
+			printf("Time: %lu  ", timer.getTime() / 1000);
 			printf("@  %d fps\n",hrTicks.getFPS());
 			if (DEBUG == 2){
 				printf("camera: %d %d\n", camera.getBox().x, camera.getBox().y);

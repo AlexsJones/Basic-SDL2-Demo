@@ -12,11 +12,11 @@ class Engine{ public:static SDL_Rect getImageSheetDimensions(std::string); stati
 **/
 
 sAnimation::sAnimation()
-	: id(),locked(false), currentFrame(1), timeref(0)
+	: id(),locked(false), currentFrame(1)
 {
 //	frames.reserve(2);
 	add( {0,0,0,0} );
-	speed = 65;
+	speed.set(65);
 	defaultFrame = 0;
 	reverseAnimate = false;
 }
@@ -31,7 +31,7 @@ void sAnimation::add( SDL_Rect frame ){
 
 void sAnimation::animate()
 {
-	if( Timer::updateInterval(speed, timeref) )
+	if( speed() )
 	{
 		if ( frames.size() == 2 ){
 			return;

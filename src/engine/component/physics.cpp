@@ -3,13 +3,16 @@
 #include "macro.h"
 
 Component::Physics::Physics()
-	:velocity(140.f), timeref(SDL_GetTicks())
+	:velocity(140.f)
 {
 	vel.x = vel.y = 0.f;
 	acc.x = acc.y = 0;
-	timestep=(1000.f/velocity);
-	//timestep=(1000.f/33);
-	accstep = velocity*((timestep * 4.f)/1000.f);//LOL ~4	//4 is meant to be an amount of pixels per step
+	
+/*	Uh-oh... no float...*/
+	timestep.set(1000.f/velocity);
+	//timestep.set(1000.f/33);
+	
+	accstep = velocity*((timestep.get() * 4.f)/1000.f);//LOL ~4	//4 is meant to be an amount of pixels per step
 	deaccstep = accstep * 4.f;
 //	animation.setSpeed(2000/(velocity/5));
 	
@@ -31,7 +34,7 @@ void Component::Physics::update(Uint8& ACTION, SDL_Rect& box)
 	if (box.y != (int )pos.y)
 		pos.y = box.y;
 		
-while (Timer::updateInterval(timestep, timeref)){	
+while ( timestep() ){	
 	if ( (!hasFlag(ACTION, LEFT) && !hasFlag(ACTION, RIGHT)) || hasFlag(ACTION, (LEFT + RIGHT)) ){
 			if (acc.x > 0){
 				acc.x -= 12;
@@ -64,12 +67,12 @@ while (Timer::updateInterval(timestep, timeref)){
 	if (acc.x < -velocity) 	acc.x = -velocity;
 	if (acc.y < -velocity) 	acc.y = -velocity;
 	
-	vel.x = ((timestep/1000.f) * acc.x);
-	vel.y = ((timestep/1000.f) * acc.y);
+	vel.x = ((timestep.get()/1000.f) * acc.x);
+	vel.y = ((timestep.get()/1000.f) * acc.y);
 	pos.x += vel.x;
 	pos.y += vel.y;
 	box.x = pos.x;
 	box.y = pos.y;
 }
-if (!ACTION){ timeref = SDL_GetTicks(); }
+if (!ACTION){ timestep.resetTime(); }
 }

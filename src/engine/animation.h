@@ -8,7 +8,9 @@
 #include <vector>
 
 typedef unsigned int Uint;
-/**	TODO: Include an 'std::initializer_list' for the animation structure.
+/**	TODO: Need a persistant animation so it updates, even if the player isn't moving.
+ * 
+ * 		Include an 'std::initializer_list' for the animation structure.
   * 	
   * 	Need to know where to start reading the file for animation if there
   * 	are multiple animations in one image. This will be held be the animation
@@ -44,12 +46,11 @@ protected:
 
 	bool locked;
 	std::vector<SDL_Rect> frames;	//sequence of frames
-	int speed;
+	Interval speed;
 	
 	Uint currentFrame;
 	Uint defaultFrame;
 	
-	Uint timeref;
 	bool reverseAnimate;
 //		bool loop;						//Does the animation loop, or just play and start from begining
 	

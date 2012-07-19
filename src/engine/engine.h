@@ -52,8 +52,7 @@ class Engine
 		bool quit;
 		bool isPaused;
 //		bool gameStarted;
-		Uint hudRefreashRefTime;
-		Uint hudRefreashInterval;
+		Interval hudRefreashInterval;
 		
 		Map map;
 		Camera camera;
@@ -67,7 +66,7 @@ class Engine
 		//Poc::Animation.load()
 		static std::map<std::string, SDL_Texture*> imageVault;
 		
-		Timer timer;
+		Timer<Uint64> timer;
 		Ticks hrTicks;
 		
 		SDL_Rect backgroundClip;

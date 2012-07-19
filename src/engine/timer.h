@@ -5,94 +5,160 @@
 
 typedef unsigned int Uint;
 
-/** NOTE: Only the Engine can set the values in the static Ticks:: class.
- *  TODO: Convert Ticks into a namespace?
+/**	This file contains implementations of Timer(32 and 64 bit),
+ *	Interval(returns true when _ms_ have passed) and Ticks(FPS control).
+ *	
+ *	TODO:
+ *	Should Ticks be renamed to something like FPS or FPSCounter?
+ *	
+ *	NOTE:
+ *	Convert SDL's time+frequency to a my time+frequency.
+ *	localTime = (SDL_GetTicks() * ticksPerSecond) / 1000 ;
  **/
-
-class Timer
+ 
+template<typename T>
+class iTimer
 {
-	private:
-		Uint startTime;				//original time started			//prob will be implemented as a game timer
-		Uint currentTime;			//total time running
-		Uint pausedTime;			//loop start time
-		bool timerStarted;
-		bool isPaused;
-	public:
-		Timer(): startTime(0), currentTime(0), pausedTime(0), timerStarted(false), isPaused(true){}
-		//getters
-		const Uint& getGameTime(){ return currentTime; }
-		const bool& timerIsRunning(){ return timerStarted; }
-		const bool& timerIsPaused()	{ return timerStarted; }
-		
-		inline void start(){
-			if (!timerStarted){
-				startTime = SDL_GetTicks();
-				timerStarted = true;
-				isPaused = false;
-			}
+private:
+	T startTime;		/*	Original starting time.	*/
+	T stopTime;			/*	Time when the timer was stopped.	*/
+	T currentTime;		/*	Total time running.	*/
+	T pausedTime;		/*	Holds the time paused.	*/
+	bool started;
+	bool paused;
+	
+	virtual const T getTicks() =0;
+public:
+	iTimer(): startTime(0), stopTime(0), currentTime(0),
+				pausedTime(0), started(false), paused(true){}
+	const T& getTime(){ return currentTime; }
+	const bool isRunning(){ return ( started && !paused ); }
+	const bool isPaused(){ return paused; }
+	
+	inline void start(){
+		if (!started){
+			startTime = getTicks();
+			started = true;
+			paused = false;
 		}
-		
-		inline void update(){
-			if ( timerStarted && !isPaused )
-				currentTime = SDL_GetTicks() - startTime - pausedTime;
+	}
+	
+	inline T& update(){
+		if ( started && !paused )
+			currentTime = getTicks() - startTime - pausedTime;
+		return currentTime;
+	}
+	
+	inline void pause()
+	{
+		if (started && !paused){
+			update();
+			paused = true;
+			pausedTime = currentTime;
 		}
-		
-		inline void pause(){
-			if (timerStarted && !isPaused){
-				isPaused = true;
-				pausedTime = currentTime;
-			}
-		}
-				
-		inline void resume(){
-			if (timerStarted && isPaused){
-				isPaused = false;
-				pausedTime = SDL_GetTicks() - pausedTime - startTime;		
-			}
-		}
-		
-		inline void pauseResume(){
-			if (timerStarted){
-				if (!isPaused)
-					pause();
-				else resume();
-			}
-		}
-		
-		inline void stop()
+	}
+			
+	inline void resume(){
+		if (started && paused)
 		{
-			timerStarted = false;
-			isPaused = true;
+			paused = false;
+			update();
+			pausedTime = currentTime;
+			update();
+			
+		}
+	}
+	
+	inline void pauseResume(){
+		if (started){
+			if (!paused)
+				pause();
+			else resume();
+		}
+	}
+	
+	inline void stop()
+	{
+		if ( started )
+		{
+			stopTime = update();
+			started = false;
+			paused = true;
 			startTime = 0;
 			currentTime = 0;
 			pausedTime = 0;
 		}
-		
-		/** Returns true if time in 'ms' have passed since your own 
-		 *  reference time.
-		**/
-		inline static bool updateInterval( int ms, Uint& rtime ){
-			if (rtime <= SDL_GetTicks() - ms){
-				rtime = SDL_GetTicks() - ( SDL_GetTicks() % ms );		//align to nearest 'ms' interval
-				return true;
-			}
-			return false;
-		}
-		
-		/** This increases rtime by the interval time. It is meant to be
-		 * 	used to update&catchup by calling it in a while loop.
-		 * 	If time in 'ms' haven't passed, it retruns false, therefore
-		 *  ending the while loop.
-		**/
-		inline static bool updateInterval( float ms, float& rtime ){
-			if (rtime <= SDL_GetTicks() - ms){
-				rtime += ms;
-				return true;
-			}
-			return false;
-		}
+	}
+
+
 };
 
+template<typename T> class Timer;
+/*	Timer<Uint32> can *only* run for ~49 days. This is more useful for
+ *	simple, non-core timers.
+ */
+template<> class Timer<Uint32> : public iTimer<Uint32>
+{
+protected:
+	const Uint32 getTicks(){ return SDL_GetTicks(); }
+};
+/*	Timer<Uint64> is useful for timers that need to be run for long periods
+ *	of time, like the game client, or more likely, the Server. Also supports
+ * 	higher accuracy.
+ */
+template<> class Timer<Uint64> : public iTimer<Uint64>
+{
+protected:
+	const Uint64 getTicks(){ return SDL_GetPerformanceCounter(); }
+};
+
+
+/*	Interval is used for anything that needs to be updated in intervals.
+ *	e.g. Some interface info could be updated every 1sec, or animation 
+ *	could be updated every 70ms.
+ *	This could be turned into or bundled with an action and/or event. (or binded within)
+ *	Tell it to execute something when the interval passes.(wouldn't be good
+ *	for animation because the animation changes too much, it's better if
+ *	whatever has the animation and Interval timer controls that program flow.)
+ *
+ * 	NOTE: Since the reference time is always reset, this is not suitable
+ *	for persistant timing because of loss of precision.
+ *	There is no support to have the reference time incremented by the
+ *	ms to update multiple times. Instead the reference time will be set to the
+ *	current tick count.
+ */
+class Interval
+{
+private:
+	Uint32 ms;
+	Uint32 referenceTime;
+	static inline Uint32 getTicks(){ return SDL_GetTicks(); }
+public:
+	Interval() :ms(1000), referenceTime(getTicks()) {}
+	Interval( Uint32 interval ) :ms(interval), referenceTime(getTicks()) {}
+	
+	inline Uint32 get(){ return ms; }
+	inline void set(Uint32 interval){ ms = interval; }
+	inline void resetTime(){ referenceTime = getTicks() - ( getTicks() % ms ); }
+	
+	inline bool check(const Uint32 interval){
+		if ( (referenceTime <= getTicks() - interval) && interval){
+			/*	Align to nearest 'ms' interval	*/
+			resetTime();
+			return true;
+		}
+	}
+	inline bool check(){ return check(ms); }
+	
+	inline bool operator()(){ return check(); }
+	inline void operator()(Uint32 interval){ ms = interval; }
+};
+
+/*	High resolution timer for framerate control. Only engine can update
+ * 	and start this timer.
+ *	TODO:
+ * 	Should the getDeltaTicks return deltaTicks / 1000 so its in milliseconds?
+ */
 class Ticks
 {
 friend class Engine;
@@ -114,9 +180,6 @@ private:
 	
 	inline void capFPS(Uint32 maxfps){
 		update();
-		//maxfps *= ( ticksPerSecond / 1000 );
-		//maxfps *= 1000;
-//		std::cout << "Max FPS: " << maxfps << ", Delta Ticks: " << deltaTicks << "\n";
 		if( ticksPerSecond / deltaTicks >= maxfps ){
 			SDL_Delay( ( ( ticksPerSecond / maxfps) - deltaTicks  ) / 1000 );
 			update();
@@ -128,20 +191,18 @@ private:
 	}
 public:
 	Ticks() :ticksPerSecond(SDL_GetPerformanceFrequency()) {}
-	//Get the delta time
+/*	Get the delta time.	*/
 	inline const Uint getDeltaTicks(){
 		if ( (deltaTicks)/1000 == 0 )
 			return 1;
-//		std::cout << "Delta::" << deltaTicks << "\n";
 		return (deltaTicks)/1000;
-		}
-	//Get the FPS of rendering and logic cycle
-	inline const Uint getFPS(){
+	}
+/*	Get the FPS for the cycle.	*/
+	inline const Uint getFPS()
+	{
 		if( !fps )
 			fps=1;
 		return fps;
 	}
 };
-
-
-#endif
+#endif /*	_ENGINE_TIMER_H	*/
