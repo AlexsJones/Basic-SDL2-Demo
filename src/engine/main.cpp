@@ -13,7 +13,7 @@ int main(int argc, char *args[])
 {
 /*	Possibly support command line options...	*/
 	printf("Use arrow keys to move\n");
-	printf("Press Tab to switch characters\n");
+	printf("Press Q to switch characters\n");
 	printf("Press F2 to toggle debugging modes \n");
 	printf("Press F11 to toggle Fullscreen \n\n");
 	

@@ -47,7 +47,7 @@ void Component::Animation::update(Uint8& ACTION)
 void Component::Animation::add( std::string id, std::string imagefile, SDL_Rect* image, SDL_Rect frame, int frames, int defaultFrame )
 {
 /*	Get box for the image. If not supplied already.	*/
-	if ( !image ){
+	if ( !image ) {
 		SDL_Rect imageBox;
 		imageBox = Engine::getImageSheetDimensions(imagefile);
 		imageBox.x = imageBox.y = 0;

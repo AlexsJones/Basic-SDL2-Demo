@@ -16,7 +16,7 @@
 	Window Engine::window;
 	SDL_Renderer* Engine::canvas;
 	std::map<std::string, SDL_Texture*> Engine::imageVault;
-	Uint Engine::DEBUG(2);
+	Uint Engine::DEBUG(0);
 
 Engine::Engine()
 	: quit(false), isPaused(false), hudRefreashInterval(1000), ACTIVE_PLAYER(0), backgroundTile(NULL)
@@ -88,7 +88,9 @@ void Engine::game_loop()
 						}
 						else { setMenuBackground("grass"); }
 					}
-					if (event.key.keysym.sym == SDLK_TAB){
+					//if (event.key.keysym.sym == SDLK_TAB)
+					if (event.key.keysym.sym == SDLK_q)
+					{
 						if(ACTIVE_PLAYER < players.size() - 1){
 							ACTIVE_PLAYER++;
 							camera.follow(&players[ACTIVE_PLAYER]);
@@ -149,6 +151,7 @@ void Engine::game_loop()
 /* END of Main Game Loop	*/
 
 inline bool Engine::fileExists(std::string filename){
+	//Need method for checking file on __ANDROID__
 	std::ifstream file(filename.c_str());
 	return file.is_open();
 }
@@ -193,21 +196,23 @@ SDL_Texture* Engine::loadImage( std::string filename )
 		return imageVault[filename];
 	else return loadNewImage(filename);
 }
-
+#include <iostream>
 SDL_Texture* Engine::loadNewImage( std::string filename )
 {
-	if (fileExists( filename )){
-		imageVault[filename] = IMG_LoadTexture(Engine::getCanvas(), filename.c_str());
-		return imageVault[filename];
-	}
-	
 	std::string newfilename = IMG_DIR + filename + PNG;
-
+	imageVault[filename] = IMG_LoadTexture(Engine::getCanvas(), newfilename.c_str());
+	return imageVault[filename];
+	
+//	if (fileExists( filename )){
+//		imageVault[filename] = IMG_LoadTexture(Engine::getCanvas(), filename.c_str());
+//		return imageVault[filename];
+//	}
+	
 	//if (!fileExists(newfilename);){ //request image from server --> put in IMG_DIR }
-	if (fileExists(newfilename)){
-		imageVault[filename] = IMG_LoadTexture(Engine::getCanvas(), newfilename.c_str());
-		return imageVault[filename];
-	}
+	//if (fileExists(newfilename)){
+	//	imageVault[filename] = IMG_LoadTexture(Engine::getCanvas(), newfilename.c_str());
+	//	return imageVault[filename];
+	//}
 
 	newfilename = IMG_DIR + filename + JPG;
 	if (fileExists(newfilename)){
@@ -345,9 +350,10 @@ void Engine::drawPlayers()
 **/
 	for( std::list<Player>::iterator playerIndex = renderPlayers.begin();
 			playerIndex != renderPlayers.end(); playerIndex++ ){
-			if (DEBUG)
+			if (DEBUG){
 				SDL_SetRenderDrawColor(canvas, 0, 255, 255, 255);
 				drawRect( players[playerIndex->ID()].getBox() );
+			}
 			draw(players[playerIndex->ID()], camera.getBox());
 		}
 }
