@@ -169,7 +169,7 @@ private:
 	inline Uint32 getTicks(){ return SDL_GetTicks(); }
 public:
 	Interval(){}
-	Interval( Uint32 interval ) :iInterval(interval) {}
+	Interval( Uint32 interval ) :iInterval<Uint32>::iInterval(interval) {}
 	inline bool operator()(){ return check(); }
 	inline void operator()(Uint32 interval){ this->interval = interval; }
 };
@@ -179,7 +179,7 @@ private:
 	inline Uint32 getTicks(){ return SDL_GetTicks(); }
 public:
 	Interval(){}
-	Interval( Uint32 interval ) :iInterval(interval) {}
+	Interval( Uint32 interval ) :iInterval<Uint32>::iInterval(interval) {}
 	inline bool operator()(){ return check(); }
 	inline void operator()(Uint32 interval){ this->interval = interval; }
 };
@@ -189,7 +189,7 @@ private:
 	inline Uint64 getTicks(){ return SDL_GetPerformanceCounter(); }
 public:
 	Interval(){}
-	Interval( Uint64 interval ) :iInterval(interval) {}
+	Interval( Uint64 interval ) :iInterval<Uint64>::iInterval(interval) {}
 	inline bool operator()(){ return check(); }
 	inline void operator()(Uint32 interval){ this->interval = interval; }
 };

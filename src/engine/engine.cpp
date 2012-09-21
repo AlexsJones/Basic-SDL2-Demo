@@ -405,7 +405,7 @@ void Engine::tileTexture2( SDL_Texture* source, SDL_Rect& clip, SDL_Rect bounds 
 	}
 }
 
-void Engine::render(){ SDL_RenderPresent(Engine::getCanvas()); }
+void Engine::render(){ SDL_SetRenderDrawColor(canvas, 50, 150, 50, 255); SDL_RenderPresent(Engine::getCanvas()); }
 void Engine::renderClear(){ SDL_RenderClear(Engine::getCanvas()); }
                                                                                        
 void Engine::setMenuBackground( std::string filename ){
