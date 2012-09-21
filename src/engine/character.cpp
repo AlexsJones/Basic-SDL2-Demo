@@ -12,15 +12,16 @@ Character::Character()
 	box.y = 0;
 	oldbox = box;
 }
-void Character::TestActions()
+bool Character::TestActions(std::string action)
 {
-	for (auto x: Actions)
+/*	for (auto x: Actions)
 	{
 		if ( (x.second) )	//If the value is true
 		{
 			printf("'[%s]' is enabled in custom actions\n",x.first.c_str());
 		}
-	}
+	}*/
+	return Actions[action];
 }
 
 //Character(const InputComponent& input)

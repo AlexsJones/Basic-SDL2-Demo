@@ -16,10 +16,7 @@
 	Window Engine::window;
 	SDL_Renderer* Engine::canvas;
 	std::map<std::string, SDL_Texture*> Engine::imageVault;
-//	Uint Ticks::startTicks;
-//	Uint Ticks::deltaTicks;
-//	Uint Ticks::fps;
-	Uint Engine::DEBUG(0);
+	Uint Engine::DEBUG(2);
 
 Engine::Engine()
 	: quit(false), isPaused(false), hudRefreashInterval(1000), ACTIVE_PLAYER(0), backgroundTile(NULL)
@@ -72,7 +69,7 @@ void Engine::game_loop()
 //	gameStarted = true;
 	while ( quit == false )		//	&& menu == false		//engine.menu_loop()
 	{
-		hrTicks.start();
+		HRTicks.start();
 		//pollEvents();
 		while (SDL_PollEvent(&event))
 		{
@@ -146,7 +143,7 @@ void Engine::game_loop()
 
 		render();
 		timer.update();
-		hrTicks.capFPS( MAX_FPS );
+		HRTicks.capFPS( MAX_FPS );
 	}
 }
 /* END of Main Game Loop	*/
@@ -190,7 +187,7 @@ void Engine::drawRect(SDL_Rect rect)
 	SDL_RenderDrawRect( Engine::getCanvas(), &rect);
 }
 
-inline SDL_Texture* Engine::loadImage( std::string filename )
+SDL_Texture* Engine::loadImage( std::string filename )
 {
 	if (imageVault[filename])
 		return imageVault[filename];
@@ -232,20 +229,20 @@ SDL_Rect Engine::getImageSheetDimensions(std::string character){
 	return image;
 }
 
-inline SDL_Rect Engine::getImageClip(Uint8 id){//for blocks and items
+SDL_Rect Engine::getImageClip(Uint8 id){//for blocks and items
 	SDL_Rect clip;
 //	clip.x =  Engine::setClip( image, x, y, BLOCK_SIZE, BLOCK_SIZE )
 	return clip;
 }
 
 //apply the entire texture onto an area of the canvas
-inline void Engine::applyTexture( SDL_Texture* source, SDL_Rect& clip ){
+void Engine::applyTexture( SDL_Texture* source, SDL_Rect& clip ){
 	SDL_RenderCopy( Engine::getCanvas(), source, NULL, &clip );
 	//SDL_RenderCopyEx()	//Sweet, the rotation API has made it into SDL1.3 =]
 
 }
 
-inline void Engine::applyTexture( SDL_Texture* source, SDL_Rect& sourceclip, SDL_Rect& clip ){
+void Engine::applyTexture( SDL_Texture* source, SDL_Rect& sourceclip, SDL_Rect& clip ){
 	SDL_RenderCopy( Engine::getCanvas(), source, &sourceclip, &clip );
 }
 
@@ -282,11 +279,11 @@ void Engine::addPlayer(Player &player)
 }
 
 template <typename Object1, typename Object2>
-inline bool collides( Object1 &object1, Object2 &object2 ){		
+bool collides( Object1 &object1, Object2 &object2 ){		
 	return SDL_HasIntersection(&object1.getBox(), &object2.getBox());
 }
 
-inline bool collides( SDL_Rect rect1, SDL_Rect rect2 ){		
+bool collides( SDL_Rect rect1, SDL_Rect rect2 ){		
 	return SDL_HasIntersection(&rect1, &rect2);
 }
 
@@ -296,26 +293,19 @@ inline bool collides( SDL_Rect rect1, SDL_Rect rect2 ){
  * 	wouldn't need to know much.
 **/
 template <typename Object>		//does this need to be a template if all clases are based on Object?(polymorphism)
-inline void draw( Object &object, SDL_Rect offset)
+void draw( Object &object, SDL_Rect offset)
 {
 	SDL_Rect objectBox = object.getBox();
 /*	Camera position - Object position = Screen position	*/
 	objectBox.x -= offset.x;
 	objectBox.y -= offset.y;
-
-/*	Flip the Y-axis to be more side-scroller friendly
- * 	Should there be a scenes or something that determine the local orientation.
- **/
-	//objectBox.y -= offset.h;
-	//objectBox.y = objectBox.y * -1 - objectBox.h;
-	
-//	printf("Player's Y position %d\n",objectBox.y);
 	switch (object.objectType)
 	{
 		case CHARACTER:
 		{
 			//SDL_SetTextureAlphaMod(Engine::loadImage(object.name), 128); 					//50% transparent
 			//SDL_SetTextureBlendMode(Engine::loadImage(object.name), SDL_BLENDMODE_ADD);		//increases brightness
+			SDL_SetTextureColorMod(Engine::loadImage(object.name), 255,255,255);		//doesn't effect image
 			/*Make this apply_texture whenever I can*/
 			SDL_RenderCopy( Engine::getCanvas(), Engine::loadImage(object.name),
 							&object.getImage(), &objectBox );	//	clip of image, clip on screen
@@ -353,10 +343,12 @@ void Engine::drawPlayers()
 /**	This function cycles through all players that are stored in the
  * 	renderPlayers.
 **/
-	for( auto playerIndex: renderPlayers ){
+	for( std::list<Player>::iterator playerIndex = renderPlayers.begin();
+			playerIndex != renderPlayers.end(); playerIndex++ ){
 			if (DEBUG)
-				drawRect( players[playerIndex.ID()].getBox() );
-			draw(players[playerIndex.ID()], camera.getBox());
+				SDL_SetRenderDrawColor(canvas, 0, 255, 255, 255);
+				drawRect( players[playerIndex->ID()].getBox() );
+			draw(players[playerIndex->ID()], camera.getBox());
 		}
 }
 
@@ -413,24 +405,25 @@ void Engine::tileTexture2( SDL_Texture* source, SDL_Rect& clip, SDL_Rect bounds 
 	}
 }
 
-inline void Engine::render(){ SDL_RenderPresent(Engine::getCanvas()); }
-inline void Engine::renderClear(){ SDL_RenderClear(Engine::getCanvas()); }
+void Engine::render(){ SDL_RenderPresent(Engine::getCanvas()); }
+void Engine::renderClear(){ SDL_RenderClear(Engine::getCanvas()); }
                                                                                        
-inline void Engine::setMenuBackground( std::string filename ){
+void Engine::setMenuBackground( std::string filename ){
 	backgroundTile = loadNewImage(filename);
 	backgroundClip = setClip(backgroundTile);
 }
 
-inline void Engine::tileMenuBackground(){ tileTexture(backgroundTile, backgroundClip); }
+void Engine::tileMenuBackground(){ tileTexture(backgroundTile, backgroundClip); }
 
 void Engine::debug()
 {
 	if (DEBUG){
+		SDL_SetRenderDrawColor(canvas, 255, 0, 0, 255);
 		drawRect( camera.getBox() );
 		drawRect( map.getBox() );
 		if ( !isPaused && DEBUG && hudRefreashInterval() ){
 			printf("Time: %lu  ", timer.getTime() / 1000);
-			printf("@  %d fps\n",hrTicks.getFPS());
+			printf("@  %d fps\n",HRTicks.getFPS());
 			if (DEBUG == 2){
 				printf("camera: %d %d\n", camera.getBox().x, camera.getBox().y);
 				printf("map: %d %d\n", map.getBox().x, map.getBox().y);

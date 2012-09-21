@@ -43,7 +43,7 @@ class Character : public Object
 	public:
 		Character();
 		Character(Component::Input* input);
-		void TestActions();
+		bool TestActions(std::string action);
 		void move(SDL_KeyboardEvent& keyevent);
 		void moveTo();
 		void update();

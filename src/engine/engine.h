@@ -27,7 +27,7 @@ typedef unsigned int Uint;
 #include "player.h"
 #include "camera.h"
 
-#define MAX_FPS 60
+#define MAX_FPS 600
 #define MAX_PLAYERS 256
 
 /*	Engine contains some of the oldest code in this project, some is poorly
@@ -52,7 +52,7 @@ class Engine
 		bool quit;
 		bool isPaused;
 //		bool gameStarted;
-		Interval hudRefreashInterval;
+		Interval<Uint32> hudRefreashInterval;
 		
 		Map map;
 		Camera camera;
@@ -60,22 +60,16 @@ class Engine
 		std::list<Player> renderPlayers;
 		Uint ACTIVE_PLAYER;
 		
-		//Poc::Image.load()
-		//Poc::Sound.load()
-		//Poc::Music.load()
-		//Poc::Animation.load()
 		static std::map<std::string, SDL_Texture*> imageVault;
 		
 		Timer<Uint64> timer;
-		Ticks hrTicks;
+		Ticks HRTicks;
 		
 		SDL_Rect backgroundClip;
 		SDL_Texture* backgroundTile;
 	public:
 		Engine();
 		bool init();
-		//void main_loop();		//this could include the game_loop and menu_loop
-		//menu_loop();	
 		void game_loop();
 			void pause();
 			void resume();
@@ -114,7 +108,6 @@ class Engine
 		void cleanUp();
 		
 		inline static Window* getWindow(){ return &window; }
-	/*	TODO:Why am I not using these functions???	*/
 		inline SDL_Event& getEvent(){ return event; }
 		inline static SDL_Renderer* getCanvas(){ return canvas; }
 		

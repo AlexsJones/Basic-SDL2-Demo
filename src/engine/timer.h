@@ -127,32 +127,75 @@ protected:
  *	ms to update multiple times. Instead the reference time will be set to the
  *	current tick count.
  */
-class Interval
+
+template<typename T>
+class iInterval
 {
-private:
-	Uint32 ms;
-	Uint32 referenceTime;
-	static inline Uint32 getTicks(){ return SDL_GetTicks(); }
+protected:
+	T interval;
+	T referenceTime;
+	virtual T getTicks() =0;
 public:
-	Interval() :ms(1000), referenceTime(getTicks()) {}
-	Interval( Uint32 interval ) :ms(interval), referenceTime(getTicks()) {}
+	iInterval() :referenceTime(0) {}
+	iInterval( Uint32 interval ) :interval(interval), referenceTime(0) {}
 	
-	inline Uint32 get(){ return ms; }
-	inline void set(Uint32 interval){ ms = interval; }
-	inline void resetTime(){ referenceTime = getTicks() - ( getTicks() % ms ); }
+	inline Uint32 get(){ return interval; }
+	inline void set(Uint32 interval){ this->interval = interval; }
+	inline void resetTime(){ referenceTime = getTicks() - ( getTicks() % interval ); }
 	
-	inline bool check(const Uint32 interval){
-		if ( (referenceTime <= getTicks() - interval) && interval){
+	inline bool check(const Uint32 interval)
+	{
+		if ( (referenceTime <= getTicks() - interval) ){
 			/*	Align to nearest 'ms' interval	*/
 			resetTime();
-			return true;
+			if (referenceTime > interval)
+				return true;
 		}
+		return false;
 	}
-	inline bool check(){ return check(ms); }
+	inline bool check(){ return check(interval); }
+	//inline bool catchup(){
+		//if ( check() )
+			//referenceTime += ms;
+	//}
 	
 	inline bool operator()(){ return check(); }
-	inline void operator()(Uint32 interval){ ms = interval; }
+	inline void operator()(Uint32 interval){ this->interval = interval; }
 };
+
+template<typename T> class Interval : public iInterval<Uint32>
+{
+private:
+	inline Uint32 getTicks(){ return SDL_GetTicks(); }
+public:
+	Interval(){}
+	Interval( Uint32 interval ) :iInterval(interval) {}
+	inline bool operator()(){ return check(); }
+	inline void operator()(Uint32 interval){ this->interval = interval; }
+};
+template<> class Interval<Uint32> : public iInterval<Uint32>
+{
+private:
+	inline Uint32 getTicks(){ return SDL_GetTicks(); }
+public:
+	Interval(){}
+	Interval( Uint32 interval ) :iInterval(interval) {}
+	inline bool operator()(){ return check(); }
+	inline void operator()(Uint32 interval){ this->interval = interval; }
+};
+template<> class Interval<Uint64> : public iInterval<Uint64>
+{
+private:
+	inline Uint64 getTicks(){ return SDL_GetPerformanceCounter(); }
+public:
+	Interval(){}
+	Interval( Uint64 interval ) :iInterval(interval) {}
+	inline bool operator()(){ return check(); }
+	inline void operator()(Uint32 interval){ this->interval = interval; }
+};
+typedef Interval<Uint32> Interval32;
+typedef Interval<Uint64> Interval64;
+
 
 /*	High resolution timer for framerate control. Only engine can update
  * 	and start this timer.

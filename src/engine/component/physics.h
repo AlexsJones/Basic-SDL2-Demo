@@ -23,7 +23,7 @@ class Physics : public Component::iComponent
 		float accstep;
 		float deaccstep;
 		
-		Interval timestep;
+		Interval<Uint64> timestep;
 		
 	public:
 		Physics();

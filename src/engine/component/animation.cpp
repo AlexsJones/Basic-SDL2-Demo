@@ -114,9 +114,9 @@ void Component::Animation::set( Uint nAnimation ){
 
 void Component::Animation::set( std::string animationID )
 {
-	for ( auto index: animations)
+	//for ( auto index: animations)
 	{	/*	check if animationID matches any animations[i].id()	*/
-		if ( index.ID() == animationID )
+	//	if ( index.ID() == animationID )
 		{
 			/*	How do I convert the Animation match to number.
 			 * 

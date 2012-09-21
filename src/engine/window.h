@@ -43,7 +43,7 @@ class Window
 		SDL_Window* window;
 		SDL_Renderer* canvas;
 	//	Engine* engine;
-	//	SDL_Thread thread;
+	//	SDL_Thread thread;	/*	Or put this into Engine!	*/
 		SDL_DisplayMode displayMode;
 		SDL_Surface* windowicon;
 		int minWidth;
@@ -61,6 +61,8 @@ class Window
 		const SDL_Rect &getBox();
 		bool isFullscreen();
 		void update( SDL_WindowEvent event );
+		
+		SDL_Window* getWindow(){return window;}
 		~Window();
 };
 #endif

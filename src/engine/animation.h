@@ -46,7 +46,7 @@ protected:
 
 	bool locked;
 	std::vector<SDL_Rect> frames;	//sequence of frames
-	Interval speed;
+	Interval<Uint32> speed;
 	
 	Uint currentFrame;
 	Uint defaultFrame;

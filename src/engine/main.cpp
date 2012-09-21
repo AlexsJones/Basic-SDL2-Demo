@@ -17,11 +17,12 @@ int main(int argc, char *args[])
 	printf("Press F2 to toggle debugging modes \n");
 	printf("Press F11 to toggle Fullscreen \n\n");
 	
+	//Engine engine;
 	Engine engine;
 	if (engine.init() == false) {return -1;}
-	//Game::Init(); //This would be used to inject content that the engine and menu can use.
-	engine.setMenuBackground( "grass" );		//put into a menu loop ---> and menu class
-//	engine.menu_loop();
+	engine.setMenuBackground( "grass" );
+	
+	//engine.registerCharacter(Character actor){character_db.add(actor.name(),actor);}
 	
 	Pog pog;
 	engine.addPlayer(pog);

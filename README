@@ -15,11 +15,11 @@
 
 NOTE
 =====
-You MUST have SDL2 to compile this game. If you don't have it first get
+You MUST have SDL2 to compile this game. If you don't have it, first get
 mercurial, then follow the README in the "lib" directory.
 
 
-Installing the game system-wide isn't support yet, but you can generate
+Installing the game system-wide isn't supported yet, but you can generate
 a application launcher '.desktop' file, which can be placed into
 '~/.local/share/applications/' to be recognized by your desktop environment.
 ./generate_launcher.sh
