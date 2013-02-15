@@ -16,7 +16,7 @@ Component::Animation::Animation()
 }
 
 //Should ACTION by type-safe?????
-void Component::Animation::update(Uint8& ACTION)
+void Component::Animation::update(Uint8 ACTION)
 {
 	//if(ACTION || oldBox.x != box.x || oldBox.y != box.y )
 	{

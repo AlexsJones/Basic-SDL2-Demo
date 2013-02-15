@@ -248,4 +248,6 @@ public:
 		return fps;
 	}
 };
+
 #endif /*	_ENGINE_TIMER_H	*/
+

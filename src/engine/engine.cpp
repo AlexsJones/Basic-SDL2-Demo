@@ -2,15 +2,6 @@
 #include "engine.h"
 
 #include <algorithm>
-/** TODO: Create resource/content/asset manager for:
- * 	images
- *  sound
- *  music
- * And Possibly:
- *  animations
- *  menus
- *  even Players or Objects?
-**/
 
 /*	Instantiation of some static variables :(	*/
 	Window Engine::window;
@@ -88,8 +79,9 @@ void Engine::game_loop()
 						}
 						else { setMenuBackground("grass"); }
 					}
-					//if (event.key.keysym.sym == SDLK_TAB)
-					if (event.key.keysym.sym == SDLK_q)
+					//Todo, change switch players to an android compatible button.
+					if (event.key.keysym.sym == SDLK_TAB)
+					//if (event.key.keysym.sym == SDLK_q)
 					{
 						if(ACTIVE_PLAYER < players.size() - 1){
 							ACTIVE_PLAYER++;
@@ -243,8 +235,6 @@ SDL_Rect Engine::getImageClip(Uint8 id){//for blocks and items
 //apply the entire texture onto an area of the canvas
 void Engine::applyTexture( SDL_Texture* source, SDL_Rect& clip ){
 	SDL_RenderCopy( Engine::getCanvas(), source, NULL, &clip );
-	//SDL_RenderCopyEx()	//Sweet, the rotation API has made it into SDL1.3 =]
-
 }
 
 void Engine::applyTexture( SDL_Texture* source, SDL_Rect& sourceclip, SDL_Rect& clip ){

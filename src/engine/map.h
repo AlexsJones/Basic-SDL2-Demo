@@ -13,24 +13,8 @@
 
 #define TOTAL_CHUNKS ( (MAP_WIDTH/CHUNK_SIZE) * (MAP_WIDTH/CHUNK_SIZE) )
 
-/** The Map will be large, give it its own namespace.
- * 
- * 
- *  The map may be randomly generated with some water, trees, region-types, rocks,
- * 	etc(basic map elements). The Map is planned to be a set size on
- * 	creation. So, no infinite maps. All map specifications will be inside
- * 	a script that users can modify to have a custom server.
- * 
- * 
-**/
-
-class Chunk
+class Chunk //not used
 {
-/**	Water level will be needed so the engine knows how to render
- * 	the border around water. For example, a beach is drawn differently
- * 	than a cliff-type pond. It may also be usefull for waterfalls.
- * 	The water block on the map overides this if it is greater.
-**/
 	public:
 		std::vector<Block> tiles;
 		int waterlevel;
@@ -68,7 +52,7 @@ class Map
 			else if (box.y + box.h > Bounds.y + Bounds.h){ box.y = Bounds.y + Bounds.h - box.h; }
 		}
 		
-		void generate()
+		void generate() // writes to a file
 		{	
 			Uint8 map_edge = 0xFF;
 			Uint8 grass =	0x00;										//regions with different ground textures

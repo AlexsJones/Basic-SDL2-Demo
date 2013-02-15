@@ -24,7 +24,7 @@ class Animation : public Component::iComponent
 	public:
 		Animation();
 		void update(){};
-		void update(Uint8& ACTION);
+		void update(Uint8 ACTION);
 		//void animate(int);
 		
 		void add( std::string id, std::string imagefile, SDL_Rect* image, SDL_Rect frame, int frames, int defaultFrame=0 );

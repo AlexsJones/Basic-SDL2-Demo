@@ -2,18 +2,10 @@
 #include "engine.h"
 #include "log.h"
 
-/** TODO::create a game(or Client) class that interfaces with the engine.
- *  namespace Poc{ class Engine; class Window;}
- *  
- *  I NEED to come up with a name for this *ENGINE*, give it a nice clean API,
- * 	and give it bindings for python.
-**/
-
 int main(int argc, char *args[])
 {
-/*	Possibly support command line options...	*/
 	printf("Use arrow keys to move\n");
-	printf("Press Q to switch characters\n");
+	printf("Press Tab to switch characters\n");
 	printf("Press F2 to toggle debugging modes \n");
 	printf("Press F11 to toggle Fullscreen \n\n");
 	
@@ -31,12 +23,15 @@ int main(int argc, char *args[])
 	largePog.resize( 94, 102 );
 	engine.addPlayer(largePog);
 	
-	Player pirate( "pirate", 40, 60 );
-	engine.addPlayer(pirate);
+	//Player pirate( "pirate", 40, 60 );
+	//engine.addPlayer(pirate);
 	
 	Player monster( "monster", 40, 60 );
 	monster.resize(80,120);
 	engine.addPlayer(monster);
+	
+	Player small_monster( "monster", 40, 60 );
+	engine.addPlayer(small_monster);
 
 	
 	std::cout << timestamp() << "[Client] Created player types successfully.\n";

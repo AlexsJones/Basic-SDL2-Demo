@@ -7,8 +7,7 @@
 //#include "SDL2/SDL_rect.h"
 #include <string>
 
-#define TITLE "Plane of Craftiness"
-#define RELEASE "[ALpha]"
+#define TITLE "Plane of Craftiness[Alpha]"
 #ifndef DATE
 	#define DATE ""
 #endif
@@ -23,7 +22,7 @@
 typedef unsigned int Uint;
 
 /**	Needs to handle input.
- * Note: IF input is not grabbed, everytime window is focused it needs
+ *  Note: IF input is not grabbed, everytime window is focused it needs
  * 			to check if window is fullscreen. Ex. If user alt-tabs out of
  * 			fullscreen, the window looks restored, but behaves oddly.
  * 			So, if window is supposed to be fullscreen, on focus set it to

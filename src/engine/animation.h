@@ -8,20 +8,8 @@
 #include <vector>
 
 typedef unsigned int Uint;
-/**	TODO: Need a persistant animation so it updates, even if the player isn't moving.
- * 
- * 		Include an 'std::initializer_list' for the animation structure.
-  * 	
-  * 	Need to know where to start reading the file for animation if there
-  * 	are multiple animations in one image. This will be held be the animation
-  * 	class and implemented by overloading the constructor. Default would
-  * 	just be start=0;.
-  * 	or	
-  * 	The AnimationComponent could calculate a value of it's start cooridinates.
-  * 	This would be good if different animations have different sizes.
-  */
 
-/**	Sprites has a source image and a sequence of frames. It stores how many frames
+/**	Sprite has a source image and a sequence of frames. It stores how many frames
  * 	it has. Animation has one sprite. It stores the position, animation speed, etc
  * 	in order to animate the sprite.
 **/

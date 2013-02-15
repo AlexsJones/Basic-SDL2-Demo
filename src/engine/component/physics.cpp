@@ -7,6 +7,7 @@ Component::Physics::Physics()
 {
 	vel.x = vel.y = 0.f;
 	acc.x = acc.y = 0;
+	pos.x = pos.y = 0;
 	
 	timestep.set(velocity);
 	//timestep.set(1000.f/33);

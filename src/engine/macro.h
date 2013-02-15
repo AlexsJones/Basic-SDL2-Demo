@@ -7,7 +7,7 @@
  *  Pretty much the only helpful one is hasFlag(). These are used extensibly
  *  for checking the ACTION flags which wil be changed soon.
  *  SO:
- *  TODO::REMOVE ALL OF THEM!!
+ * There should be an Enum class that is able to turn flags on/off and move to the next value.
 **/
 #define flagOn(a,b) ( a |= b )
 #define flagOff(a,b) ( a &= ~(b) )

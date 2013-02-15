@@ -10,18 +10,20 @@
 \_____________________________________\/ /
  \_____________________________________\/
 
-[Insert License Here]
+Created by Dan Hatch
 **/
 
 NOTE
 =====
 You MUST have SDL2 to compile this game. If you don't have it, first get
-mercurial, then follow the README in the "lib" directory.
+mercurial, then install system-wide. You can follow the README in the "lib"
+directory. You do not need to install locally, it is more complicated.
 
 
 Installing the game system-wide isn't supported yet, but you can generate
-a application launcher '.desktop' file, which can be placed into
+an application launcher '.desktop' file, which can be placed into
 '~/.local/share/applications/' to be recognized by your desktop environment.
+(Only works in Unix environments?)
 ./generate_launcher.sh
 
 
@@ -34,3 +36,5 @@ make
 Then go back into the main directory and run the game.
 cd ../
 ./poc
+
+Note: You must run the game from this directory so it can find the images.

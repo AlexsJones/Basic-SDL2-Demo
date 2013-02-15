@@ -15,9 +15,6 @@ namespace Component { class Input; }
 
 class Character : public Object
 {
-/**	Should be CharacterTemplate?? -> Overload the
- * constructor(or create()) function to setup the components.
-**/
 	protected:
 	//	std::vector<Component> components
 		
@@ -32,11 +29,6 @@ class Character : public Object
 		Component::Animation animation;
 		Component::Input* input; //Engine Assigns Player1 controls*?
 		
-	//UpdateComponent??	//Could be used for managing which Components update when.	
-	//--->Going into PhysicsComponent
-//		float timeref;
-//		float timestep;
-	
 	//CharacterComponent?
 		float damage;
 		float health;
@@ -49,8 +41,6 @@ class Character : public Object
 		void update();
 		void update(int acc);
 		
-/* Don't need animate() anymore. Instead objects will get a draw() function
- * so they can handle their own rendering. */
 		void animate(){}
 		void draw(){}
 

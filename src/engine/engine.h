@@ -31,11 +31,8 @@ typedef unsigned int Uint;
 #define MAX_PLAYERS 256
 
 /*	Engine contains some of the oldest code in this project, some is poorly
- * 	written. Needs to be combed through and split up and encapsulate the
- * 	functionality.
- * 
- * 		Rename function to getImageDimensions()
- * */
+ * 	written. Needs to be split up and encapsulated.
+ */
 #define ITEM_SHEET "items"
 #define BLOCK_SHEET "blocks"
 #define PNG ".png"
