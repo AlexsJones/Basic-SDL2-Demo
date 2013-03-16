@@ -1,21 +1,11 @@
-##	Plane of Craftiness
-##
 ##  Makefile to build on *nix systems.
 ##
 ##
-##  'make install' shouldn't build the project. It should only install a built
-##	project. It will be disabled for now.
-##
-##  date doesn't work yet..
-DATE=$(date +%Y%m%d)
+DATE=$(shell date +%Y%m%d)
 
 PREFIX=../
-INSTALL_PREFIX=/opt/PlaneOfCraftiness/
 
-DATADIR=$(PREFIX)/data
-BINDIR=$(PREFIX)
-LIBDIR=$(PREFIX)/lib
-BIN=$(PREFIX)/poc	##$(DATE)
+BIN=$(PREFIX)/sdl2-demo
 
 CC=g++
 CFLAGS= -g -c -std=c++0x -Wall -pedantic
@@ -37,43 +27,25 @@ SOURCES= 					\
 
 OBJECTS=$(SOURCES:.cpp=.o) ##$(INCLUDES)
 
-INSTALL=install
-#INSTALL_PREFIX=/opt/PlaneOfCraftiness/
-INSTALL_BINDIR=$(INSTALL_PREFIX)/
-INSTALL_DATADIR=$(INSTALL_PREFIX)/data
-INSTALL_LIBDIR=$(INSTALL_PREFIX)/data
-##.PHONY=clean install dist
 
 all: $(BIN)
 
-##  This is a TEST
-PROJECT_DIRS=				\
-			$(PREFIX)/		\
-			$(PREFIX)/data	\
-			$(PREFIX)/lib
-##  INSTALL_DIRS will be PROJECT_DIRS with the INSTALL_PREFIX instead
-INSTALL_DIRS=$(PROJECT_DIRS:$(PREFIX)=$(INSTALL_PREFIX))
-
-install: $(INSTALL_DIRS)
-	
-$(PREFIX).$(INSTALL_PREFIX):
-	$(INSTALL) -d $@
-	$(INSTALL) $< $@
-##  END of TEST
-
-#install: $(BIN)
-#	$(INSTALL) -d $(INSTALL_BINDIR)
-#	$(INSTALL) $(BIN) $(INSTALL_BINDIR)
-#	$(INSTALL) -d $(INSTALL_DATADIR)
-#	$(INSTALL) $(DATADIR) $(INSTALL_DATADIR)
-
 ##  Link Objects
+## $@  -  points to the rule: $(BIN)  - which expands to "../sdl2-demo"
+## $^  -  points to the dependencies: $(OBJECTS)
 $(BIN): $(OBJECTS)
 	$(CC) $(LINKERFLAGS) $^ -o $@ $(LIBS)
 
 ##  Compile Objects
+## This rule creates the $(OBJECTS)
 .cpp.o:
 	$(CC) $(CFLAGS) $(DEFINES) $< -o $@ $(INCLUDES)
 
 clean:
 	rm $(OBJECTS)
+
+
+.PHONY : all
+.PHONY : clean
+
+
