@@ -5,7 +5,7 @@
 
 #define MAP_DIR DATA_DIR "worlds/"
 
-//#define MAPSIZE 1024		//change to 2^MAPSIZE?(Like Sauerbraten) MAPSIZE 8 == 256
+
 #define BLOCK_SIZE 32		//individual grid size in pixels (should match grass texture size)
 #define CHUNK_SIZE 20		//amount of blocks grouped together for loading/unloading
 #define MAP_WIDTH 100

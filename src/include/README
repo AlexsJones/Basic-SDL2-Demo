@@ -1,2 +1,0 @@
-These files are only needed for the build process and are not platform specific, 
-so they only need to be replaced if SDL2 is updated.

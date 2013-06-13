@@ -10,7 +10,9 @@ Component::Animation::Animation()
 	currentAnimation = 0;
 	animations.reserve( 8 );
 	sAnimation blankAnimation;
-//	blankAnimation.add( box );
+	oldBox.x = 0; oldBox.y = 0;
+	oldBox.w = 0; oldBox.h = 0;
+	blankAnimation.add( oldBox );
 	blankAnimation.ID("");
 	animations.push_back( blankAnimation );
 }

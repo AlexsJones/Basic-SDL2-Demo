@@ -3,7 +3,13 @@
 
 #include "animation.h"
 
-enum ObjectType //TODO:Get rid of this.
+/*
+ *	DON'T DO THIS. AVOID OBJECT HIERARCHIES FOR GAME OBJECTS.
+ *	Look up components for your entity system.
+*/
+
+
+enum ObjectType
 {	
 	NONE 		= 0x00,
 	ITEM 		= 0x01,

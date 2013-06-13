@@ -30,8 +30,8 @@ typedef unsigned int Uint;
 #define MAX_FPS 600
 #define MAX_PLAYERS 256
 
-/*	Engine contains some of the oldest code in this project, some is poorly
- * 	written. Needs to be split up and encapsulated.
+/*	Engine contains some of the oldest code in this project, the whole design
+ * 	is poorly written. Needs to be split up and encapsulated.
  */
 #define ITEM_SHEET "items"
 #define BLOCK_SHEET "blocks"

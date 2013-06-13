@@ -4,15 +4,8 @@
 #include "SDL.h"
 #include "window.h"
 
-/**	This will provide a set of functions for loading, retrieving and 
- * 	generally maintaining all resources for the game.(Images, sound, music, etc)
- * 	It may also be used for loading configuration settings, mods, and even menus.
- * 
- * 	Also components.
- * 
- * 	template<tyname T>
- * 	map<std::string, T> components;
- * 	
+/**	
+ * 	Fetches and stores Images.
 **/
 
 template<typename T>

@@ -5,15 +5,9 @@
 
 typedef unsigned int Uint;
 
-/**	This file contains implementations of Timer(32 and 64 bit),
+/**
+ *	This file contains implementations of Timer(32 and 64 bit),
  *	Interval(returns true when _ms_ have passed) and Ticks(FPS control).
- *	
- *	TODO:
- *	Should Ticks be renamed to something like FPS or FPSCounter?
- *	
- *	NOTE:
- *	Convert SDL's time+frequency to a my time+frequency.
- *	localTime = (SDL_GetTicks() * ticksPerSecond) / 1000 ;
  **/
  
 template<typename T>
@@ -113,19 +107,13 @@ protected:
 };
 
 
-/*	Interval is used for anything that needs to be updated in intervals.
+/**	Interval is used for anything that needs to be updated in intervals.
  *	e.g. Some interface info could be updated every 1sec, or animation 
  *	could be updated every 70ms.
  *	This could be turned into or bundled with an action and/or event. (or binded within)
- *	Tell it to execute something when the interval passes.(wouldn't be good
- *	for animation because the animation changes too much, it's better if
- *	whatever has the animation and Interval timer controls that program flow.)
  *
- * 	NOTE: Since the reference time is always reset, this is not suitable
+ * 	@note Since the reference time is always reset, this is not suitable
  *	for persistant timing because of loss of precision.
- *	There is no support to have the reference time incremented by the
- *	ms to update multiple times. Instead the reference time will be set to the
- *	current tick count.
  */
 
 template<typename T>
@@ -154,6 +142,7 @@ public:
 		return false;
 	}
 	inline bool check(){ return check(interval); }
+
 	//inline bool catchup(){
 		//if ( check() )
 			//referenceTime += ms;
@@ -199,8 +188,6 @@ typedef Interval<Uint64> Interval64;
 
 /*	High resolution timer for framerate control. Only engine can update
  * 	and start this timer.
- *	TODO:
- * 	Should the getDeltaTicks return deltaTicks / 1000 so its in milliseconds?
  */
 class Ticks
 {

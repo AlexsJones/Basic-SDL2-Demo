@@ -6,8 +6,6 @@
 
 #include "character.h"
 
-/**
- **/
 
 class Player : public Character
 {
@@ -27,9 +25,6 @@ class Player : public Character
 //		inline const PlayerType& getType(){ return type; }	
 };
 
-///////////////////////////
-///	Definition of POG	///
-///////////////////////////
 /**	This is the type of code that needs to be in a script. **/
 class Pog : public Player
 {

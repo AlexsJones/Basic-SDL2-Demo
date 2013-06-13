@@ -1,6 +1,6 @@
-#### Created by Dan Hatch 2012 ####
+#### Created 2012 by Dan Hatch ####
 
-This demo requires SDL2 and SDL2_image.
+## NOTE, THIS BUILD DOES NOT CURRENTLY WORK AND I DO NOT KNOW WHY.
 
 ## Install SDL2 (Required) ##
 -----------------
@@ -21,7 +21,6 @@ This demo requires SDL2 and SDL2_image.
 ## How to build the Game ##
 -----------------
 Go to source directory and compile:
-	cd src/
 	make
 
 Then go back into the project's root directory and run the game:
@@ -29,8 +28,4 @@ Then go back into the project's root directory and run the game:
 	./sdl2-demo
 
 Note: The executable must be run from the project directory
-	  Unless you generate a launcher (Only works in Unix environments?):
-	./generate_launcher.sh
 	
-	
-

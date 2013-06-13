@@ -4,10 +4,7 @@
 /** The following macros are used to turn flags on/off, or check if
  *  a flag is turned on inside the variable(a).
  *  
- *  Pretty much the only helpful one is hasFlag(). These are used extensibly
- *  for checking the ACTION flags which wil be changed soon.
- *  SO:
- * There should be an Enum class that is able to turn flags on/off and move to the next value.
+ *  Pretty much the only helpful one is hasFlag().
 **/
 #define flagOn(a,b) ( a |= b )
 #define flagOff(a,b) ( a &= ~(b) )

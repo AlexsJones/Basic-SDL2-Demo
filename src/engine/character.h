@@ -16,11 +16,11 @@ namespace Component { class Input; }
 class Character : public Object
 {
 	protected:
-	//	std::vector<Component> components
+		//	std::vector<Component> components
 		
-	//MovementComponent movement;
+		//MovementComponent movement;
 		Uint8 ACTION;
-	/*	The Future, or have a dedicated structure?	*/
+		/*	The Future, or have a dedicated structure?	*/
 		std::map< std::string, bool > Actions;
 
 		Component::Position position;
@@ -29,7 +29,7 @@ class Character : public Object
 		Component::Animation animation;
 		Component::Input* input; //Engine Assigns Player1 controls*?
 		
-	//CharacterComponent?
+		//CharacterComponent?
 		float damage;
 		float health;
 	public:

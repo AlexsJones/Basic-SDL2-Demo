@@ -8,14 +8,6 @@
 /** Currently, the camera is set up to center itself over the player until
  *  it hits the map edge. If the map is smaller than the camera on a given
  *  axis, the camera will be centered over the map on that axis.
- *  
- *  Possible TODOs:
- *    camera movement has inertia
- *    ability to follow multiple players
- *    zooming in-and-out.
- *    ability to follow a path
- *    give the Engine a default camera, which receives input
- *        if nothing else is added.
  */
 
 class Camera : public iObject

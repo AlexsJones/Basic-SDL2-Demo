@@ -15,15 +15,15 @@ sAnimation::sAnimation()
 	: id(),locked(false), currentFrame(1)
 {
 //	frames.reserve(2);
+	defaultFrame = 0;
 	add( {0,0,0,0} );
 	speed.set(65);
-	defaultFrame = 0;
 	reverseAnimate = false;
 }
 
 void sAnimation::add( SDL_Rect frame ){
 	frames.push_back( frame );
-	if ( defaultFrame==0 /*&& frames.size() > 1*/ )
+	if ( defaultFrame == 0 /*&& frames.size() > 1*/ )
 	{
 		setDefault(1);
 	}

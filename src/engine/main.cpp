@@ -1,6 +1,7 @@
 
 #include "engine.h"
-#include "log.h"
+
+#include <iostream>
 
 int main(int argc, char *args[])
 {
@@ -34,8 +35,8 @@ int main(int argc, char *args[])
 	engine.addPlayer(small_monster);
 
 	
-	std::cout << timestamp() << "[Client] Created player types successfully.\n";
-	std::cout << timestamp() << "[Client] Entering main game loop.\n";
+	std::cout << "[Client] Created player types successfully.\n";
+	std::cout << "[Client] Entering main game loop.\n";
 	
 	engine.game_loop();		//----> menu_loop() + game_loop()
 	

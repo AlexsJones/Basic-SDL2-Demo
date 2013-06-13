@@ -21,11 +21,7 @@ struct KeyBinding
 	animation("left"), move("left")
 	struct GameEventPrimitive{std::string id; std::list<SDL_Keycode>}
 */
-/*	need some way to relate keys/movement/actions/animations with each other.
-	or the components need to communicate in a certain way
-	structure vs event system
-	easy vs most flexible
-*/
+
 namespace Component{
 class Input : public Component::iComponent
 {

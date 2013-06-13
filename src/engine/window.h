@@ -21,19 +21,8 @@
 
 typedef unsigned int Uint;
 
-/**	Needs to handle input.
- *  Note: IF input is not grabbed, everytime window is focused it needs
- * 			to check if window is fullscreen. Ex. If user alt-tabs out of
- * 			fullscreen, the window looks restored, but behaves oddly.
- * 			So, if window is supposed to be fullscreen, on focus set it to
- * 			fullscreen. This feature could be added as a precaution even if
- * 			input is not grabbed.
- * 
- * 			When window is created it produces "invalid window" warning.
- * 
- * 			There should be some type of scaling(of images) for small windows.
- * 
- * 	NOTE: SDL_Window's position is absolutely useless
+/**
+ * 	Wrapper for SDL_Window*.
 **/
 class Window
 {
@@ -41,8 +30,6 @@ class Window
 		SDL_Rect box;
 		SDL_Window* window;
 		SDL_Renderer* canvas;
-	//	Engine* engine;
-	//	SDL_Thread thread;	/*	Or put this into Engine!	*/
 		SDL_DisplayMode displayMode;
 		SDL_Surface* windowicon;
 		int minWidth;
@@ -64,4 +51,6 @@ class Window
 		SDL_Window* getWindow(){return window;}
 		~Window();
 };
+
 #endif
+

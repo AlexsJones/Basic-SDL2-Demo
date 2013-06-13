@@ -145,6 +145,7 @@ void Engine::game_loop()
 inline bool Engine::fileExists(std::string filename){
 	//Need method for checking file on __ANDROID__
 	std::ifstream file(filename.c_str());
+	if ( !file.is_open() ) printf("Couldn't find %s.\n",filename.c_str());
 	return file.is_open();
 }
 
@@ -226,11 +227,7 @@ SDL_Rect Engine::getImageSheetDimensions(std::string character){
 	return image;
 }
 
-SDL_Rect Engine::getImageClip(Uint8 id){//for blocks and items
-	SDL_Rect clip;
-//	clip.x =  Engine::setClip( image, x, y, BLOCK_SIZE, BLOCK_SIZE )
-	return clip;
-}
+
 
 //apply the entire texture onto an area of the canvas
 void Engine::applyTexture( SDL_Texture* source, SDL_Rect& clip ){
@@ -283,11 +280,10 @@ bool collides( SDL_Rect rect1, SDL_Rect rect2 ){
 }
 
 
-/**	Should objects control how their drawn, and engine just handles what objects to draw.
- * 	This would allow greater flexibility with special abilities, and engine
- * 	wouldn't need to know much.
-**/
-template <typename Object>		//does this need to be a template if all clases are based on Object?(polymorphism)
+
+// This does not need to be templated. Just use polymorphism with an
+// interface class.
+template <typename Object>
 void draw( Object &object, SDL_Rect offset)
 {
 	SDL_Rect objectBox = object.getBox();
@@ -299,8 +295,8 @@ void draw( Object &object, SDL_Rect offset)
 		case CHARACTER:
 		{
 			//SDL_SetTextureAlphaMod(Engine::loadImage(object.name), 128); 					//50% transparent
-			//SDL_SetTextureBlendMode(Engine::loadImage(object.name), SDL_BLENDMODE_ADD);		//increases brightness
-			SDL_SetTextureColorMod(Engine::loadImage(object.name), 255,255,255);		//doesn't effect image
+			//SDL_SetTextureBlendMode(Engine::loadImage(object.name), SDL_BLENDMODE_ADD);	//increases brightness
+			SDL_SetTextureColorMod(Engine::loadImage(object.name), 255,255,255);			//doesn't effect image
 			/*Make this apply_texture whenever I can*/
 			SDL_RenderCopy( Engine::getCanvas(), Engine::loadImage(object.name),
 							&object.getImage(), &objectBox );	//	clip of image, clip on screen
@@ -315,9 +311,7 @@ void Engine::update()
 /**	This function currently updates all players and the camera, then sorts
  * 	them into the correct order for rendering.
  * 	TODO: Need ID/username system for players.
- * 			Need to modify for ability to sort and store objects too.
- * 	
- * 	Note: STL containers(vector,list...) cannot store pointers or references. 
+ * 		  Need to modify for ability to sort and store objects too.
 **/
 	renderPlayers.clear();
 	
@@ -435,17 +429,13 @@ void Engine::debug()
 }
 
 Engine::~Engine(){
-/** May need to clean-up image vault. Since the
- * 	SDL_Textures* cannot be dealloc. with delete command the map<> may not
- * 	be able to automatically clean-up after itself.
-**/
-/**
+/* Textures must be freed be SDL, although this won't compile.
 	if (!imageVault.empty()){
 		for ( auto texIndex: imageVault ){
 			SDL_DestroyTexture(imageVault[texIndex]);
 		}
 	}
-**/
+*/
 	SDL_DestroyRenderer(canvas);
 	SDL_Quit();
 }
