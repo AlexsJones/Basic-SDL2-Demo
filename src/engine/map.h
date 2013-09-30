@@ -5,7 +5,6 @@
 
 #define MAP_DIR DATA_DIR "worlds/"
 
-
 #define BLOCK_SIZE 32		//individual grid size in pixels (should match grass texture size)
 #define CHUNK_SIZE 20		//amount of blocks grouped together for loading/unloading
 #define MAP_WIDTH 100
@@ -13,7 +12,7 @@
 
 #define TOTAL_CHUNKS ( (MAP_WIDTH/CHUNK_SIZE) * (MAP_WIDTH/CHUNK_SIZE) )
 
-class Chunk //not used
+class Chunk
 {
 	public:
 		std::vector<Block> tiles;
@@ -54,9 +53,9 @@ class Map
 		
 		void generate() // writes to a file
 		{	
-			Uint8 map_edge = 0xFF;
-			Uint8 grass =	0x00;										//regions with different ground textures
-			std::ofstream map(MAP_DIR "blank_map.dat");					//the plane is grass unless otherwise specified
+			Uint8 map_edge = 255;
+			Uint8 grass =	0;										//regions with different ground textures
+			std::fstream map( MAP_DIR "blank_map.dat", std::fstream::out | std::fstream::app );					//the plane is grass unless otherwise specified
 			for (int nRow = 1; nRow <= MAP_HEIGHT; nRow++){				//border around map by default
 				for (int nColumn = 1; nColumn <= MAP_WIDTH; nColumn++){	//regions"sectors" with different privilages
 					if (nRow == 1 || nRow == MAP_HEIGHT || nColumn==1){	//call functions to describe map rules? for easier modding

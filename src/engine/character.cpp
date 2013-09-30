@@ -65,9 +65,9 @@ void Character::update()
 {
 	oldbox = box;
 	//box = physics.update( ACTION, box );
+	//input->update();
 	physics.update( ACTION, box );
 	position.update();
-	//input->update();
 
 	if( ACTION && (oldbox.x != box.x || oldbox.y != box.y) ){
 	//if (true) {

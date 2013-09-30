@@ -1,9 +1,7 @@
 
 #include "component/animation.h"
 #include "macro.h"
-
-class Engine{ public:static SDL_Rect getImageSheetDimensions(std::string); static SDL_Rect setClip( SDL_Texture*, int, int, int, int );
-};
+#include "engine.h"
 
 Component::Animation::Animation()
 {	

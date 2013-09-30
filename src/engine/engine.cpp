@@ -20,6 +20,7 @@ bool Engine::init()
 	
 	canvas = window.create();
 	map.load();
+	map.generate();
 	camera.resize(window.getBox());
 	if (map.isActive()) { camera.setBounds(map.getBox()); }
 	
@@ -56,7 +57,7 @@ void Engine::pauseResume()
 /*	 Start of the Main Game Loop 	*/
 void Engine::game_loop()
 {
-	timer.start();
+//	timer.start();
 //	gameStarted = true;
 	while ( quit == false )		//	&& menu == false		//engine.menu_loop()
 	{
@@ -136,7 +137,7 @@ void Engine::game_loop()
 		debug();
 
 		render();
-		timer.update();
+		//timer.update();
 		HRTicks.capFPS( MAX_FPS );
 	}
 }

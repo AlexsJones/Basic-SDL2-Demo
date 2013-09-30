@@ -1,6 +1,10 @@
 #include "window.h"
 #include "macro.h"
 
+#include <iostream>
+#include <exception>
+
+
 Window::Window() : minWidth(480), minHeight(320)
 {
 	box.x = box.y = 0;
@@ -29,6 +33,10 @@ SDL_Renderer* Window::create()
  * 	rate. So mine, for example is 60fps, you can only cap fps below this value.
  */
 	canvas = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC );
+	if ( !canvas ) {
+		std::cout << "Failed to create the Renderer.";
+		throw std::exception();
+	}
 	return canvas;
 }
 
