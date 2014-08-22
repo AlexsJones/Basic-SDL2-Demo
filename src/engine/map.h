@@ -2,6 +2,8 @@
 #define _ENGINE_MAP_H
 
 #include "object.h"
+#include <fstream>
+#include <string>
 
 #define MAP_DIR DATA_DIR "worlds/"
 
@@ -53,27 +55,28 @@ class Map
 		
 		void generate() // writes to a file
 		{	
-			Uint8 map_edge = 255;
-			Uint8 grass =	0;										//regions with different ground textures
-			std::fstream map( MAP_DIR "blank_map.dat", std::fstream::out | std::fstream::app );					//the plane is grass unless otherwise specified
-			for (int nRow = 1; nRow <= MAP_HEIGHT; nRow++){				//border around map by default
-				for (int nColumn = 1; nColumn <= MAP_WIDTH; nColumn++){	//regions"sectors" with different privilages
-					if (nRow == 1 || nRow == MAP_HEIGHT || nColumn==1){	//call functions to describe map rules? for easier modding
+			std::string map_edge = "255";
+			std::string grass = "0";
+			std::ofstream map( MAP_DIR "blank_map.dat", std::ios::out | std::ios::trunc );
+			map << std::string("This is a Map:") << std::endl;
+			for (int nRow = 1; nRow <= MAP_HEIGHT; nRow++){
+				for (int nColumn = 1; nColumn <= MAP_WIDTH; nColumn++){
+					if (nRow == 1 || nRow == MAP_HEIGHT || nColumn==1){
 						map << map_edge;
 						if (nColumn == MAP_WIDTH)
 							map << "\n";
-						else map << " ";
+						else map << "\t";
 					}
 					else if (nColumn == MAP_WIDTH){
 						map << map_edge << "\n";
 					}
-					else map << grass << " ";
+					else map << grass << "\t";
 				}
 			}
 			map.close();
 		}
 		
-	/*	Spawn or new thread and/or show a loading screen.	*/
+	/*	Spawn a new thread and/or show a loading screen.	*/
 		void load(){
 			loaded = true;
 		}

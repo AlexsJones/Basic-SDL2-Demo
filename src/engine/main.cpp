@@ -24,16 +24,16 @@ int main(int argc, char *args[])
 	largePog.resize( 94, 102 );
 	engine.addPlayer(largePog);
 	
-	//Player pirate( "pirate", 40, 60 );
-	//engine.addPlayer(pirate);
+	Player pirate( "pirate", 40, 60 );
+	engine.addPlayer(pirate);
 	
-	Player monster( "monster", 40, 60 );
+	/*Player monster( "monster", 40, 60 );
 	monster.resize(80,120);
 	engine.addPlayer(monster);
 	
 	Player small_monster( "monster", 40, 60 );
 	engine.addPlayer(small_monster);
-
+	*/
 	
 	std::cout << "[Client] Created player types successfully.\n";
 	std::cout << "[Client] Entering main game loop.\n";

@@ -6,6 +6,8 @@
 typedef unsigned int Uint;
 
 /**
+ *  DO NOT USE 64-bit versions of these classes, unless they take
+ *  	TicksPerSecond into account.
  *	This file contains implementations of Timer(32 and 64 bit),
  *	Interval(returns true when _ms_ have passed) and Ticks(FPS control).
  **/
@@ -116,6 +118,9 @@ protected:
  *	for persistant timing because of loss of precision.
  */
 
+#include <iostream>
+
+
 template<typename T>
 class iInterval
 {
@@ -129,14 +134,13 @@ public:
 	
 	inline Uint32 get(){ return interval; }
 	inline void set(Uint32 interval){ this->interval = interval; }
-	inline void resetTime(){ referenceTime = getTicks() - ( getTicks() % interval ); }
+	inline void resetTime(){ referenceTime = getTicks() - (getTicks() % interval); }
 	
-	inline bool check(const Uint32 interval)
-	{
-		if ( (referenceTime <= getTicks() - interval) ){
-			/*	Align to nearest 'ms' interval	*/
+	inline bool check(const Uint32 interval) {
+		if ( (referenceTime + interval <= getTicks()) ){
+			//std::cout << "Interval: " << interval << "\n";
 			resetTime();
-			if (referenceTime > interval)
+			//if (referenceTime > interval)
 				return true;
 		}
 		return false;

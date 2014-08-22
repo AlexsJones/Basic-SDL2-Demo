@@ -54,6 +54,8 @@ void Engine::pauseResume()
 	else{ pause(); isPaused = true; }
 }
 
+#include <iostream>
+
 /*	 Start of the Main Game Loop 	*/
 void Engine::game_loop()
 {
@@ -131,7 +133,6 @@ void Engine::game_loop()
 			tileTexture2( backgroundTile, backgroundClip, map.getView(camera.getBox()) );
 		//	tileMenuBackground();
 		}
-		
 		drawPlayers();
 		
 		debug();
@@ -317,7 +318,7 @@ void Engine::update()
 	renderPlayers.clear();
 	
 	camera.update();
-	for( Uint i = 0; i< players.size(); i++)
+	for( Uint i = 0; i < players.size(); i++)
 	{
 		if (i != ACTIVE_PLAYER)
 			players[i].update();
