@@ -1,71 +1,47 @@
 #ifndef _ENGINE_OBJECT_H
 #define _ENGINE_OBJECT_H
 
-#include "animation.h"
+#include "component/component.h"
+#include "component/animation.h"
+#include "component/physics.h"
 
-/*
- *	DON'T DO THIS. AVOID OBJECT HIERARCHIES FOR GAME OBJECTS.
- *	Look up components for your entity system.
-*/
+#include <unordered_map>
 
 
-enum ObjectType
-{	
-	NONE 		= 0x00,
-	ITEM 		= 0x01,
-	BLOCK		= 0x02,
-	CHARACTER 	= 0x03
-	//PLAYER
-};
-
-class iObject
-{
-protected:
-	SDL_Rect box;
+class Object {
 public:
-	iObject() {box.x = box.y = box.w = box.h = 0;}
-	virtual void update() { }
-	virtual inline const SDL_Rect& getBox(){ return box; }
-	inline void resize(Uint w, Uint h){box.w = w; box.h = h;}
-};
-class Object : public iObject
-{
-public:
-	Uint8 id;
+	//std::unordered_map<std::string, Component> components;
+	std::vector<Component::Component> components;
+	std::unordered_map<std::string, bool> Actions;
+	//std::set<std::string> state;
+	
+	Uint id = 0;
+	Uint imageId = 0;
 	std::string name;
-	ObjectType objectType;
 	
-	Object() : objectType(NONE){}
-	Object(ObjectType type) : objectType(type){}
-//		virtual void draw() { }
+	Uint8 ACTION = 0;
+	SDL_Rect box = {0,0,0,0};
+	SDL_Rect oldbox = {0,0,0,0};
+	Component::Physics physics;		
+	Component::Animation animation;
 	
-	inline Uint8 ID(){return id;}
 	
-/* Needed for the engine to sort the objects for rendering.	*/
-	inline bool operator<(const Object cObject) const { return box.y + box.h < cObject.box.y + cObject.box.h; }
-	inline bool operator>(const Object cObject) const { return box.y + box.h > cObject.box.y + cObject.box.h; }
+	Object();
 	~Object(){}
+	
+	virtual void init() { box = {0,0,0,0}; }
+	virtual void update( const double& dt );
+	virtual void draw() {}
+	
+	void move(SDL_KeyboardEvent& keyevent);
+	void resize(Uint w, Uint h){box.w = w; box.h = h;}
+	const SDL_Rect& getImage(){ return animation.get(); }
+	const SDL_Rect& getBox(){ return box; }
+	
+	Uint ID() { return id; }
+	Uint ID(Uint ID) { id = ID; return id; }
 };
 
-class SimpleAnimatedObject: public Object
-{
-protected:
-	sAnimation animation; //single animation.
-public:
-	SimpleAnimatedObject(ObjectType type) : Object(type){}
-	virtual void animate(){ }
-	inline const SDL_Rect &getImage(){ return animation(); }
-};
 
-class Item : public Object
-{
-public:
-	Item() : Object(ITEM) {}
-};
-
-class Block : public Object
-{
-public:
-	Block() : Object(BLOCK){}
-};
 #endif
+

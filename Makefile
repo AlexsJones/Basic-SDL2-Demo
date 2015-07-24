@@ -10,12 +10,11 @@ CXX=g++
 CXXFLAGS= -g -c -std=c++0x -Wall -pedantic
 LINKERFLAGS=-Wl,-rpath,\$$ORIGIN/lib/ -static-libgcc
 DEFINES= -DDATE='"'$$DATE'"'
-INCLUDES= -Iinclude -I$(INCLUDEDIR)
+INCLUDES= -I$(INCLUDEDIR) -I$(SRCDIR)
 LIBS= -Llib  -lSDL2 -lSDL2_image
 
 SOURCES= $(shell find $(SRCDIR) -type f -name "*.cpp")
 OBJECTS	:= $(patsubst $(SRCDIR)/%.cpp,$(BUILDDIR)/%.o,$(SOURCES))
-#OBJECTS=$(SOURCES:.cpp=.o)
 
 all: init $(BIN)
 

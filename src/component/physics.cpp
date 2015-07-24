@@ -1,6 +1,10 @@
 
 #include "component/physics.h"
+#include "object.h"
 #include "macro.h"
+
+#include <iostream>
+
 
 Component::Physics::Physics()
 	:velocity(250.f)
@@ -15,22 +19,17 @@ Component::Physics::Physics()
 	deaccstep = accstep / 2.0f;
 }
 
-void Component::Physics::update()
-{}
-
-#include <iostream>
-
-void Component::Physics::update(Uint8& ACTION, SDL_Rect& box)
-{
-//	update the acceleration and keep within bounds
-//	update the velocity using the new acc. and deltaTime
-//	add the velocity to the position, and return its value(float).
-	if (box.x != (int )pos.x)
-		pos.x = box.x;
-	if (box.y != (int )pos.y)
-		pos.y = box.y;
-		
-	while ( timestep() ){
+void Component::Physics::update(Object& object, const double& dt) {
+	Uint8& ACTION = object.ACTION;
+	SDL_Rect& box = object.box;
+	
+	// update the acceleration and keep within bounds
+	// update the velocity using the new acc. and deltaTime
+	// add the velocity to the position, and return its value(float).
+	if (box.x != (int )pos.x) { pos.x = box.x; }
+	if (box.y != (int )pos.y) { pos.y = box.y; }
+	
+	while ( timestep() ) {
 		float DT = timestep.get() / 1000.0f;
 		if ( vel.x >= 0 ) {
 			vel.x -= deaccstep;
@@ -61,5 +60,7 @@ void Component::Physics::update(Uint8& ACTION, SDL_Rect& box)
 		box.x = pos.x;
 		box.y = pos.y;
 	}
-	if (!ACTION){ timestep.resetTime(); }
+	if (!ACTION) { timestep.resetTime(); }
 }
+
+

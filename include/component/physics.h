@@ -6,31 +6,28 @@
 
 #include "SDL2/SDL_rect.h"
 
-struct fPoint{
-	float x; float y;
+struct fPoint{ float x; float y; };
+
+namespace Component {
+
+class Physics : public Component {
+private:
+	fPoint pos;
+	float velocity;
+	fPoint vel;
+	SDL_Point acc;
+	float accstep;
+	float deaccstep;
+	
+	Interval<Uint32> timestep;
+	
+public:
+	Physics();
+	void update(Object& object, const double& dt) override;
 };
 
-//base PhysicsComponent on PoisitionComponent??
-namespace Component
-{
-class Physics : public Component::iComponent
-{
-	private:
-		fPoint pos;
-		float velocity;
-		fPoint vel;
-		SDL_Point acc;
-		float accstep;
-		float deaccstep;
-		
-		Interval<Uint32> timestep;
-		
-	public:
-		Physics();
-		inline float Velocity(){ return velocity; }
-		void update();
-		void update(Uint8& ACTION, SDL_Rect& box);
-};
-}
-/*	Component namespace END	*/
+
+}//end namespace Component
+
 #endif
+

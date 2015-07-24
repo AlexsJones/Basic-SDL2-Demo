@@ -5,15 +5,22 @@
 #include <exception>
 
 
-Window::Window() : minWidth(480), minHeight(320)
+Window::Window()
+	: minWidth(480), minHeight(320)
 {
 	box.x = box.y = 0;
 	box.w = WINDOW_WIDTH;
 	box.h = WINDOW_HEIGHT;
 }
 
-SDL_Renderer* Window::create()
-{
+Window::~Window() {
+	SDL_DestroyRenderer(canvas);
+	SDL_FreeSurface(windowicon);
+	SDL_DestroyWindow(window);
+}
+
+
+SDL_Renderer* Window::create() {
 	window = SDL_CreateWindow((TITLE),
 				SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 				WINDOW_WIDTH, WINDOW_HEIGHT,
@@ -40,17 +47,17 @@ SDL_Renderer* Window::create()
 	return canvas;
 }
 
-void Window::restore(){
+void Window::restore() {
 	SDL_SetWindowFullscreen(window, SDL_FALSE);
 	SDL_SetWindowGrab(window, SDL_FALSE);
 }
 
-void Window::fullscreen(){
+void Window::fullscreen() {
 		SDL_SetWindowFullscreen(window, SDL_TRUE);
 		SDL_SetWindowGrab(window, SDL_TRUE);
 }
 
-void Window::toggleFullscreen(){
+void Window::toggleFullscreen() {
 	if (hasFlag(SDL_GetWindowFlags(window), SDL_WINDOW_FULLSCREEN) )
 		restore();
 	else fullscreen();
@@ -61,8 +68,7 @@ void Window::toggleFullscreen(){
 *	the position(0,0). This allows camera to be centered over player correctly.
 * 	resize() also prevents window from being too small.
 **/
-void Window::resize()
-{
+void Window::resize() {
 	SDL_GetWindowSize( window, &box.w, &box.h );
 	if (box.w < minWidth){
 		box.w = minWidth;
@@ -75,17 +81,16 @@ void Window::resize()
 	SDL_RenderSetViewport( canvas, &box );
 }
 
-void Window::setMinWidth(Uint w){ minWidth = w; }
-void Window::setMinHeight(Uint h){ minHeight = h; }
-void Window::setMinSize(Uint w, Uint h){ setMinWidth( w ); setMinHeight( h ); }
+void Window::setMinWidth(Uint w) { minWidth = w; }
+void Window::setMinHeight(Uint h) { minHeight = h; }
+void Window::setMinSize(Uint w, Uint h) { setMinWidth( w ); setMinHeight( h ); }
 
-const SDL_Rect &Window::getBox(){ return box; }
+const SDL_Rect &Window::getBox() { return box; }
 
-bool Window::isFullscreen(){ return hasFlag(SDL_GetWindowFlags(window), SDL_WINDOW_FULLSCREEN); }
+bool Window::isFullscreen() { return hasFlag(SDL_GetWindowFlags(window), SDL_WINDOW_FULLSCREEN); }
 
 
-void Window::update( SDL_WindowEvent event )
-{
+void Window::update( SDL_WindowEvent event ) {
 	switch ( event.type )
 	{
 		case SDL_WINDOWEVENT_RESIZED:
@@ -116,9 +121,5 @@ void Window::update( SDL_WindowEvent event )
 	}
 }
 
-Window::~Window()
-{
-	SDL_DestroyRenderer(canvas);
-	SDL_FreeSurface(windowicon);
-	SDL_DestroyWindow(window);
-}
+
+

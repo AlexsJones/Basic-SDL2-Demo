@@ -2,43 +2,34 @@
 #define _ENGINE_COMPONENT_ANIMATION_H
 
 #include "component/component.h"
-#include "../animation.h"
+#include "../animated_sprite.h"
+
 #include "SDL2/SDL_rect.h"
 #include <vector>
+#include <unordered_map>
 
-namespace Component{
+class Object;
 
-class Animation : public Component::iComponent
-{
-	private:
-		std::vector<sAnimation> animations;	//Should this be a map<Animation, std::string>
-		int currentAnimation;
-		SDL_Rect oldBox;
-	//TODO:
-		int defaultAnimationLeft;
-		int defaultAnimationRight;
-		int defaultAnimationUp;
-		int defaultAnimationDown;
-		
-		
-	public:
-		Animation();
-		void update(){};
-		void update(Uint8 ACTION);
-		//void animate(int);
-		
-		void add( std::string id, std::string imagefile, SDL_Rect* image, SDL_Rect frame, int frames, int defaultFrame=0 );
-		
-		void set(Uint animation); 			//	and Engine action-primitve?
-		void set(std::string animation);
-		void setToDefaultFrame();
-		
-		void setDefaultFrame( Uint nAnimation, Uint nFrame );
-				
-		const SDL_Rect& get(Uint nAnimation);
-		inline const SDL_Rect& operator()(){ return get(currentAnimation); }
+namespace Component {
+
+class Animation : public Component {
+private:
+	std::vector<AnimatedSprite> animations;
+	std::unordered_map<std::string, Uint> animIdByName;
+	Uint current = 0;
+	
+public:
+	Animation();
+	void update(Object& object, const double& dt) override;
+	void add(std::string animName, AnimatedSprite sprite);
+	void set(std::string animName);
+	void setToDefaultFrame();
+	void setDefaultFrame(std::string animName, Uint nFrame);
+	const SDL_Rect& get();
+	const SDL_Rect& get(std::string animName);
 };
 
-}
-/*	Component namespace END	*/
+}//end namespace Component
+
 #endif
+

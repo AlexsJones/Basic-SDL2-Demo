@@ -125,8 +125,8 @@ template<typename T>
 class iInterval
 {
 protected:
-	T interval;
-	T referenceTime;
+	T interval = 0;
+	T referenceTime = 0;
 	virtual T getTicks() =0;
 public:
 	iInterval() :referenceTime(0) {}
